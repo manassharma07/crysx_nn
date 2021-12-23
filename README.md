@@ -156,12 +156,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [] Feature 1
-- [] Feature 2
-- [] Feature 3
-    - [] Nested Feature
+- [] Weights and biases initialization
+- [] More activation functions
+    - [] Identity, LeakyReLU, Tanh, etc.
+- [] More loss functions
+    - [] categorical cross entropy, and others
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/manassharma07/crysx_nn/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -197,9 +198,13 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Manas Sharma - [@manassharma07](https://twitter.com/manassharma07) - feedback@bragitoff.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/manassharma07/crysx_nn](https://github.com/manassharma07/crysx_nn)
+
+Project Documentation: [https://bragitoff.com](https://bragitoff.com/)
+
+Blog: [https://bragitoff.com](https://bragitoff.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -208,7 +213,7 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
+* [Lecture notes by Prof. Dr. Bernd Bürgmann]()
 * []()
 * []()
 
