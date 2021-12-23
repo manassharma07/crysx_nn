@@ -174,11 +174,11 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 
 - [ ] Weights and biases initialization
-- [] More activation functions
-    - [] Identity, LeakyReLU, Tanh, etc.
-- [] More loss functions
-    - [] categorical cross entropy, and others
-- [] Optimization algorithms apart from Stochastic Gradient Descent, like ADAM, RMSprop, etc.
+- [ ] More activation functions
+    - [ ] Identity, LeakyReLU, Tanh, etc.
+- [ ] More loss functions
+    - [ ] categorical cross entropy, and others
+- [ ] Optimization algorithms apart from Stochastic Gradient Descent, like ADAM, RMSprop, etc.
 
 See the [open issues](https://github.com/manassharma07/crysx_nn/issues) for a full list of proposed features (and known issues).
 
