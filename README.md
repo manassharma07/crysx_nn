@@ -17,33 +17,33 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
+[![Contributors][contributors-shield]][https://github.com/manassharma07]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![Issues][issues-shield]][https://github.com/manassharma07/cysx_nn/issues]
+[![MIT License][license-shield]][https://github.com/manassharma07/cysx_nn/blob/main/LICENSE]
+[![LinkedIn][linkedin-shield]][https://www.linkedin.com/in/manassharma07/?originalSubdomain=de]
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="logo_crysx_nn.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">crysx_nn</h3>
 
   <p align="center">
-    project_description
+    A simplistic and efficient pure-python neural network library from Phys Whiz.
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/manassharma07/crysx_nn"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/github_username/repo_name">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/manassharma07/crysx_nn/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/manassharma07/crysx_nn/issues">Request Feature</a>
   </p>
 </div>
 
@@ -82,6 +82,13 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
+Neural networks are an integral part of machine learning.
+The project provides an easy-to-use, yet efficient implementation that can be used in your projects or for teaching/learning purposes.
+
+The library is written in pure-python with some optimizations using numpy, opt_einsum and numba. 
+
+The goal was to create a framework that is efficient yet easy to understand, so that everyone can see and learn about what goes inside a neural network. After all, the project did spawn from a semester project on CP_IV: Machine Learning course at the University of Jena, Germany.
+
 Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email`, `email_client`, `project_title`, `project_description`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -90,14 +97,12 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 ### Built With
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [NumPy](https://nextjs.org/)
+* [numba](https://reactjs.org/)
+* [opt_einsum](https://vuejs.org/)
+* [matplotlib](https://angular.io/)
+* [nnv](https://svelte.dev/)
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
