@@ -9,7 +9,8 @@ from autograd import grad, elementwise_grad, jacobian
 #     from tqdm import tqdm
 #     print('Using simple tqdm')
 
-from tqdm.autonotebook import tqdm
+# from tqdm.autonotebook import tqdm
+from tqdm.auto import tqdm
 import numexpr as ne
 from opt_einsum import contract, contract_expression
 from numba import vectorize,jit,njit,prange,set_num_threads,get_num_threads 
