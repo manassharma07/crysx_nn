@@ -2,20 +2,22 @@ import numpy as np
 # print(np.__version__)
 from autograd import numpy as anp
 from autograd import grad, elementwise_grad, jacobian
-if hasattr(__builtins__,'__IPYTHON__'):
-    from tqdm.notebook import tqdm
-    # print('Using notebook tqdm')
-else:
-    from tqdm import tqdm
-    # print('Using simple tqdm')
+# if hasattr(__builtins__,'__IPYTHON__'):
+#     from tqdm.notebook import tqdm
+#     print('Using notebook tqdm')
+# else:
+#     from tqdm import tqdm
+#     print('Using simple tqdm')
 
-from tqdm.auto import tqdm
+from tqdm.autonotebook import tqdm
 import numexpr as ne
 from opt_einsum import contract, contract_expression
 from numba import vectorize,jit,njit,prange,set_num_threads,get_num_threads 
 from nnv import NNV
 import matplotlib.pyplot as plt
 from operator import add
+import crysx_nn.loss as loss
+
 
 # act_func_dict = {'Sigmoid':Sigmoid,'ReLU':ReLU,'ELU':ELU, 'Hardshrink' : Hardshrink,'Hardsigmoid':Hardsigmoid,\
 #                  'Hardtanh':Hardtanh,'Hardswish':Hardswish,'LeakyReLU':LeakyReLU,'LogSigmoid':LogSigmoid,\
@@ -522,7 +524,7 @@ def generateExpressions(nLayers, nSamples, z, a, dc_daL, sigmaPrime, weights):
     return opt_einsum_expr
 
 # @njit(cache=False,fastmath=True)
-def nn_optimize(nEpochs, batchSize, eeta, inputs, outputs, weights, biases, activationFunc, nLayers, errorFunc, gradErrorFunc,miniterEpoch=1,miniterBatch=100):
+def nn_optimize(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss, gradErrorFunc=loss.MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
     '''
     Performs the optimization of neural network weights and biases using Stochastic gradient descent.
     Parameters:
@@ -555,6 +557,12 @@ def nn_optimize(nEpochs, batchSize, eeta, inputs, outputs, weights, biases, acti
         biases: the list of optimized biases the size of the list is equal to the number of layers (excluding the input layer)
         errors: the list of errors at evey epoch
     '''
+    if batchSize==None:
+        batchSize = min(32, inputs.shape[0])
+    if weights == None:
+        weights = []
+    if biases == None:
+        biases = []
     errors=[]
     forwardFeedDuration = 0.0
     backPropDuration = 0.0
@@ -604,7 +612,7 @@ def nn_optimize(nEpochs, batchSize, eeta, inputs, outputs, weights, biases, acti
     return weights, biases, errors
 
 # @njit(cache=False,fastmath=True)
-def nn_optimize_fast(nEpochs, batchSize, eeta, inputs, outputs, weights, biases, activationFunc, nLayers, errorFunc, gradErrorFunc,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
+def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss, gradErrorFunc=loss.MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
     '''
     Performs the optimization of neural network weights and biases using Stochastic gradient descent.
     Parameters:
@@ -636,6 +644,12 @@ def nn_optimize_fast(nEpochs, batchSize, eeta, inputs, outputs, weights, biases,
         weights: the list of optimized weights; the size of the list is equal to the number of layers (excluding the input layer)
         biases: the list of optimized biases the size of the list is equal to the number of layers (excluding the input layer)
     '''
+    if batchSize==None:
+        batchSize = min(32, inputs.shape[0])
+    if weights == None:
+        weights = []
+    if biases == None:
+        biases = []
     errors=[]
     nBatches = int(inputs.shape[0]/batchSize)
     for iEpoch in tqdm(range(nEpochs),leave=True,miniters=miniterEpoch):
