@@ -18,7 +18,7 @@ setup(
     keywords = ["neural network", "pure python", "crysx", "numba nn", "machine learning", "ML", "deep learning", "deepL", "MLP", "perceptron","phys whiz","manas sharma","bragitoff","crysx"],
     url = "http://bragitoff.com",
     packages=['crysx_nn'],
-    long_description=read('README'),
+    long_description=read('README.md'),
     install_requires=['numba>=0.54.1',
                       'numpy==1.19.2', 
                       'autograd',
