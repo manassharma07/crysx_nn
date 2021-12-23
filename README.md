@@ -27,9 +27,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <!-- <a href="https://github.com/manassharma07/crysx_nn">
     <img src="logo_crysx_nn.png" alt="Logo" width="320" height="200">
-  </a>
+  </a> -->
 
 <h3 align="center">crysx_nn</h3>
 
@@ -213,7 +213,7 @@ Blog: [https://bragitoff.com](https://bragitoff.com/)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Lecture notes by Prof. Dr. Bernd Bürgmann]()
+* Lecture notes by [Prof. Dr. Bernd Bürgmann]()
 * []()
 * []()
 
