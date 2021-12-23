@@ -173,7 +173,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- - [] Weights and biases initialization
+- [ ] Weights and biases initialization
 - [] More activation functions
     - [] Identity, LeakyReLU, Tanh, etc.
 - [] More loss functions
