@@ -213,7 +213,7 @@ Blog: [https://bragitoff.com](https://bragitoff.com/)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* Lecture notes by [Prof. Dr. Bernd Bürgmann]()
+* Lecture notes by [Prof. Dr. Bernd Bürgmann](https://www.physik.uni-jena.de/en/bruegmann)
 * []()
 * []()
 
