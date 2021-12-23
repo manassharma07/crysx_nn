@@ -145,7 +145,24 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+The most important thing for using this library properly is to use 2D NumPy arrays for defining the inputs and exoected outputs (targets) for a network. 1D arrays for inputs and targets are not supported and will result in an error.
+
+For example, let us try to simulate the logic gate AND. The AND gate takes two input bits and returns a single input bit.
+The bits can take a value of either 0 or 1. The AND gate returns 1 only if both the inputs are 1, otherwise it returns 0.
+
+The truth table of the AND gate is as follows
+
+x1 | x2 | output 
+--- | --- | --- 
+0 | 0 | 0 
+0 | 1 | 0 
+1 | 0 | 0 
+1 | 1 | 1 
+
+The four possible set of inputs are 
+```python
+   inputs = np.arrary([])
+```
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
@@ -156,11 +173,12 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [] Weights and biases initialization
+- - [] Weights and biases initialization
 - [] More activation functions
     - [] Identity, LeakyReLU, Tanh, etc.
 - [] More loss functions
     - [] categorical cross entropy, and others
+- [] Optimization algorithms apart from Stochastic Gradient Descent, like ADAM, RMSprop, etc.
 
 See the [open issues](https://github.com/manassharma07/crysx_nn/issues) for a full list of proposed features (and known issues).
 

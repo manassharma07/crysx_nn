@@ -30,7 +30,7 @@ def visualize(nInputs, neurons_per_layer, activation_func_names):
     plt.rcParams["figure.figsize"] = (14,10)
     nLayers = len(neurons_per_layer)
     # Input layer
-    layersList = [{"title":"input\n(pixels)"+"\n(n="+str(nInputs)+")", "units": nInputs, "color": "darkBlue"}]
+    layersList = [{"title":"input"+"\n(n="+str(nInputs)+")", "units": nInputs, "color": "darkBlue"}]
     # Hidden layers
     if nLayers>1:
         for i in range(nLayers-1):
@@ -604,7 +604,7 @@ def nn_optimize(nEpochs, batchSize, eeta, inputs, outputs, weights, biases, acti
     return weights, biases, errors
 
 # @njit(cache=False,fastmath=True)
-def nn_optimize_fast(nEpochs, batchSize, eeta, inputs, outputs, weights, biases, activationFunc, nLayers, errorFunc, gradErrorFunc,miniterEpoch=1,miniterBatch=100):
+def nn_optimize_fast(nEpochs, batchSize, eeta, inputs, outputs, weights, biases, activationFunc, nLayers, errorFunc, gradErrorFunc,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
     '''
     Performs the optimization of neural network weights and biases using Stochastic gradient descent.
     Parameters:
@@ -640,7 +640,8 @@ def nn_optimize_fast(nEpochs, batchSize, eeta, inputs, outputs, weights, biases,
     nBatches = int(inputs.shape[0]/batchSize)
     for iEpoch in tqdm(range(nEpochs),leave=True,miniters=miniterEpoch):
         errorEpoch = 0.0
-        for iBatch in tqdm(range(nBatches),leave=False,miniters=miniterBatch):
+        # for iBatch in range(nBatches):
+        for iBatch in tqdm(range(nBatches),leave=False,miniters=miniterBatch,disable=not(batchProgressBar)):
             offset = iBatch*batchSize
             x = inputs[offset:offset + batchSize,:]# Input vector
           
