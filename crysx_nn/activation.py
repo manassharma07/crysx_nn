@@ -51,11 +51,12 @@ def Sigmoid_grad(x):
 
 @njit(cache=True,fastmath=True)
 def ReLU(x):
-    return np.max(0,x)
+    # a = np.zeros(x.shape,dtype=np.float32)
+    return np.maximum(0.,x)
 
 @njit(cache=True,fastmath=True)
 def ReLU_grad(x):
-    return np.max(0,x)
+    return np.greater(x, 0.).astype(np.float32)
 
 @njit(cache=True,fastmath=True)
 def Tanh_offset(x):

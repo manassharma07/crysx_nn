@@ -9,8 +9,8 @@ from autograd import grad, elementwise_grad, jacobian
 #     from tqdm import tqdm
 #     print('Using simple tqdm')
 
-# from tqdm.autonotebook import tqdm
-from tqdm.auto import tqdm
+from tqdm.autonotebook import tqdm
+# from tqdm.auto import tqdm
 import numexpr as ne
 from opt_einsum import contract, contract_expression
 from numba import vectorize,jit,njit,prange,set_num_threads,get_num_threads 
@@ -18,6 +18,7 @@ from nnv import NNV
 import matplotlib.pyplot as plt
 from operator import add
 import crysx_nn.loss as loss
+import crysx_nn.activation as activation
 
 
 # act_func_dict = {'Sigmoid':Sigmoid,'ReLU':ReLU,'ELU':ELU, 'Hardshrink' : Hardshrink,'Hardsigmoid':Hardsigmoid,\
@@ -573,7 +574,7 @@ def nn_optimize(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=
     
     for iEpoch in tqdm(range(nEpochs),leave=True,miniters=miniterEpoch):
         errorEpoch = 0.0
-        for iBatch in tqdm(range(nBatches),leave=False,miniters=miniterBatch):
+        for iBatch in tqdm(range(nBatches),leave=False,miniters=miniterBatch,disable=not(batchProgressBar)):
             offset = iBatch*batchSize
             x = inputs[offset:offset + batchSize,:]# Input vector
             outExpected = outputs[offset:offset + batchSize,:] # Expected output
@@ -693,6 +694,6 @@ def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
     return weights, biases, errors
 
 
-act_func_dict = {'Sigmoid':Sigmoid,'ReLU':ReLU,'Softmax':Softmax}
-act_func_grad_dict = {'Sigmoid':Sigmoid_grad,'ReLU':ReLU_grad,'Softmax':Softmax_grad}
+act_func_dict = {'Sigmoid':activation.Sigmoid,'ReLU':activation.ReLU,'Softmax':activation.Softmax}
+act_func_grad_dict = {'Sigmoid':activation.Sigmoid_grad,'ReLU':activation.ReLU_grad,'Softmax':activation.Softmax_grad}
 

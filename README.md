@@ -179,6 +179,12 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] More loss functions
     - [ ] categorical cross entropy, and others
 - [ ] Optimization algorithms apart from Stochastic Gradient Descent, like ADAM, RMSprop, etc.
+- [ ] Implement regularizers
+- [ ] Batch normalization
+- [ ] Dropout
+- [ ] Early stopping
+- [ ] A `predict` function that returns the output of the last layer and the loss/accuracy
+- [ ] Some metric functions, although there is no harm in using `sklearn` for that 
 
 See the [open issues](https://github.com/manassharma07/crysx_nn/issues) for a full list of proposed features (and known issues).
 
