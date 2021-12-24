@@ -87,9 +87,8 @@ The project provides an easy-to-use, yet efficient implementation that can be us
 
 The library is written in pure-python with some optimizations using numpy, opt_einsum and numba. 
 
-The goal was to create a framework that is efficient yet easy to understand, so that everyone can see and learn about what goes inside a neural network. After all, the project did spawn from a semester project on CP_IV: Machine Learning course at the University of Jena, Germany.
+The goal was to create a framework that is efficient yet easy to understand, so that everyone can see and learn about what goes inside a neural network. After all, the project did spawn from a semester project on [CP_IV: Machine Learning course](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung&veranstaltung.veranstid=187951) at the [University of Jena, Germany](https://www.uni-jena.de/en/).
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email`, `email_client`, `project_title`, `project_description`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
