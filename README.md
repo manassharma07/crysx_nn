@@ -180,9 +180,108 @@ x1 | x2 | output
 
 The four possible set of inputs are 
 ```python
-   inputs = np.arrary([])
+inputs = np.array([[0.,0.,1.,1.],[0.,1.,0.,1.]]).T.astype('float32')
+print(inputs)
+print(inputs.dtype) 
 ```
+Output:
+```sh
+[[0. 0.]
+ [0. 1.]
+ [1. 0.]
+ [1. 1.]]
+float32
+```
+Similarly, set the corresponding four possible outputs as a 2D numpy array
+```python
+# AND outputs
+outputAND = np.array([0.,0.,0.,1.]) # 1D array
+outputAND = np.asarray([outputAND]).T # 2D array
+print('AND outputs\n', outputAND)
+```
+Output:
+```sh
+AND outputs
+ [[0.]
+ [0.]
+ [0.]
+ [1.]]
+```
+Next, we need to set some parameters of our Neural network
+```python
+nInputs = 2 # No. of nodes in the input layer
+neurons_per_layer = [3,1] # Neurons per layer (excluding the input layer)
+activation_func_names = ['Sigmoid', 'Sigmoid']
+nLayers = len(neurons_per_layer)
+eeta = 0.5 # Learning rate
+nEpochs=10**4 # For stochastic gradient descent
+batchSize = 4 # No. of input samples to process at a time for optimization
+```
+For a bette understanding, let us visualize it. 
+```python
+visualize(nInputs, neurons_per_layer, activation_func_names)
+```
+Output:
+![](https://www.bragitoff.com/wp-content/uploads/2021/12/Screenshot-2021-12-25-at-17.31.01.png)
 
+Now let us initialize the weights and biases. Weights and biases are provided as lists of 2D and 1D NumPy arrays, respectively (1 Numpy array for each layer). In our case, we have 2 layers (1 hidden+ 1 output), therefore, the list of Weights and Biases will have 2 NumPy arrays each.
+```python
+# Initial guesses for weights
+w1 = 0.30
+w2 = 0.55
+w3 = 0.20
+w4 = 0.45
+w5 = 0.50
+w6 = 0.35
+w7 = 0.15
+w8 = 0.40
+w9 = 0.25
+
+# Initial guesses for biases
+b1 = 0.60
+b2 = 0.05
+
+# need to use a list instead of a numpy array, since the 
+#weight matrices at each layer are not of the same dimensions
+weights = [] 
+# Weights for layer 1 --> 2
+weights.append(np.array([[w1,w4],[w2, w5], [w3, w6]]))
+# Weights for layer 2 --> 3
+weights.append(np.array([[w7, w8, w9]]))
+# List of biases at each layer
+biases = []
+biases.append(np.array([b1,b1,b1]))
+biases.append(np.array([b2]))
+
+weightsOriginal = weights
+biasesOriginal = biases
+
+print('Weights matrices: ',weights)
+print('Biases: ',biases)
+```
+Output:
+``` 
+Weights matrices:  [array([[0.3 , 0.45],
+       [0.55, 0.5 ],
+       [0.2 , 0.35]]), array([[0.15, 0.4 , 0.25]])]
+Biases:  [array([0.6, 0.6, 0.6]), array([0.05])]
+```
+Finally it is time to train our neural network. We will use mean squared error (MSE) loss function as the metric of performance. Currently, only stochastic gradient descent is supported.
+```python
+# Run optimization
+optWeights, optBiases, errorPlot = nn_optimize_fast(inputs, outputAND, activation_func_names, nLayers, nEpochs=nEpochs, batchSize=batchSize, eeta=eeta, weights=weightsOriginal, biases=biasesOriginal, errorFunc=MSE_loss, gradErrorFunc=MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100)
+```
+The function `nn_optimize_fast` returns the optimized weights and biases, as well as the error at each epoch of the optimization.
+
+We can then plot the training loss at each epoch
+```python
+# Plot the error vs epochs
+plt.plot(errorPlot)
+plt.yscale('log')
+plt.show()
+```
+Output:
+![](https://www.bragitoff.com/wp-content/uploads/2021/12/Screenshot-2021-12-25-at-18.56.01.png)
 _For more examples, please refer to the [Examples Section](https://github.com/manassharma07/crysx_nn/tree/main/examples)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
