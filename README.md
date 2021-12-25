@@ -183,7 +183,7 @@ The four possible set of inputs are
    inputs = np.arrary([])
 ```
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Examples Section](https://github.com/manassharma07/crysx_nn/tree/main/examples)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -245,7 +245,7 @@ Manas Sharma - [@manassharma07](https://twitter.com/manassharma07) - feedback@br
 
 Project Link: [https://github.com/manassharma07/crysx_nn](https://github.com/manassharma07/crysx_nn)
 
-Project Documentation: [https://bragitoff.com](https://bragitoff.com/)
+Project Documentation: [https://bragitoff.com](https://www.bragitoff.com/crysx-neural-network-crysx_nn/)
 
 Blog: [https://bragitoff.com](https://bragitoff.com/)
 
