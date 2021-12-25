@@ -51,8 +51,10 @@ def Sigmoid_grad(x):
 
 @njit(cache=True,fastmath=True)
 def ReLU(x):
-    # a = np.zeros(x.shape,dtype=np.float32)
-    return np.maximum(0.,x)
+    # Broadcasting seems expensive compared to TF and PyTorch
+    # return np.maximum(0.,x)
+    a = np.zeros(x.shape,dtype=np.float32)
+    return np.maximum(a,x)
 
 @njit(cache=True,fastmath=True)
 def ReLU_grad(x):
