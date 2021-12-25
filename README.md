@@ -123,14 +123,22 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+There are many ways to install `crysx_nn`
+
+1. Install the release (stable) version from [PyPi](https://example.com)
+    ```sh
+    pip install crysx_nn
+    ```
+2. Install the latest development version, by cloning the git repo and installing it. 
+   This requires you to have `git` installed.
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/manassharma07/crysx_nn.git
+   cd crysx_nn
+   pip install .
    ```
-3. Install NPM packages
+3. Install the latest development version without `git`.
    ```sh
-   npm install
+   pip install --upgrade https://github.com/manassharma07/crysx_nn/tarball/master
    ```
 4. Enter your API in `config.js`
    ```js
