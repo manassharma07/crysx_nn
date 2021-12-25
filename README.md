@@ -136,19 +136,19 @@ There are many ways to install `crysx_nn`
    pip install --upgrade https://github.com/manassharma07/crysx_nn/tarball/main
    ```
 
-   Check if the installation was successful by trying to import the package 
-   ```sh
-   python3
-   ```
-   ```python
-    Python 3.7.11 (default, Jul 27 2021, 07:03:16) 
-    [Clang 10.0.0 ] :: Anaconda, Inc. on darwin
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> import crysx_nn
-    >>> crysx_nn.__version__
-    '0.1.0'
-    >>> 
-   ```
+Check if the installation was successful by running python shell and trying to import the package 
+```sh
+python3
+```
+```python
+Python 3.7.11 (default, Jul 27 2021, 07:03:16) 
+[Clang 10.0.0 ] :: Anaconda, Inc. on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import crysx_nn
+>>> crysx_nn.__version__
+'0.1.0'
+>>> 
+```
 
    Finally try running the example script for simulating logic gates like AND, XOR, NAND, and OR.
    ```sh
