@@ -96,11 +96,11 @@ The goal was to create a framework that is efficient yet easy to understand, so 
 
 ### Built With
 
-* [NumPy](https://nextjs.org/)
-* [numba](https://reactjs.org/)
-* [opt_einsum](https://vuejs.org/)
-* [matplotlib](https://angular.io/)
-* [nnv](https://svelte.dev/)
+* [NumPy](https://numpy.org)
+* [numba](https://numba.pydata.org)
+* [opt_einsum](https://optimized-einsum.readthedocs.io/en/stable/)
+* [matplotlib](https://matplotlib.org)
+* [nnv](https://pypi.org/project/nnv/)
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -150,9 +150,10 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> 
 ```
 
-   Finally try running the example script for simulating logic gates like AND, XOR, NAND, and OR.
+   Finally download the example script ([here](https://github.com/manassharma07/crysx_nn/blob/main/examples/Simulating_Logic_Gates.py)) for simulating logic gates like AND, XOR, NAND, and OR,
+   and try running it
    ```sh
-   pip install --upgrade https://github.com/manassharma07/crysx_nn/tarball/main
+   python Simluating_logic_gates.py
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -260,8 +261,23 @@ Blog: [https://bragitoff.com](https://bragitoff.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
+## Citation
+If you use this library and would like to cite it, you can use:
+```
+ M. Sharma, "CrysX-NN: Neural Network libray", 2021. [Online]. Available: https://github.com/manassharma07/crysx_nn. [Accessed: DD- Month- 20YY].
+```
+or:
+```
+@Misc{,
+  author = {Manas Sharma},
+  title  = {CrysX-NN: Neural Network libray},
+  month  = december,
+  year   = {2021},
+  note   = {Online; accessed <today>},
+  url    = {https://github.com/manassharma07/crysx_nn},
+}
+```
+<p align="right">(<a href="#top">back to top</a>)</p>
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/manassharma07/crysx_nn.svg?style=for-the-badge
