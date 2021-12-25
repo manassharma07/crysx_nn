@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: crysx-nn
-Version: 0.0.1
+Version: 0.1.1
 Summary: A simplistic and efficient pure-python neural network library from Phys Whiz.
 Home-page: https://github.com/manassharma07/crysx_nn
 Author: Manas Sharma
 Author-email: feedback@bragitoff.com
 License: MIT
-Download-URL: https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.0.1.tar.gz
+Download-URL: https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.1.tar.gz
 Keywords: neural network,pure python,crysx,numba nn,machine learning,ML,deep learning,deepL,MLP,perceptron,phys whiz,manas sharma,bragitoff,crysx
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
@@ -113,7 +113,7 @@ License-File: LICENSE
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](https://github.com/manassharma07/crysx_nn)
 
 Neural networks are an integral part of machine learning.
 The project provides an easy-to-use, yet efficient implementation that can be used in your projects or for teaching/learning purposes.
@@ -426,5 +426,5 @@ or:
 [license-url]: https://github.com/manassharma07/cysx_nn/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/manassharma07
-[product-screenshot]: logo_crysx_nn.png
+[product-screenshot]: https://www.bragitoff.com/wp-content/uploads/2021/12/logo_crysx_nn.png
 
