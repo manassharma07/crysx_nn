@@ -1,0 +1,13 @@
+LICENSE
+README.md
+setup.cfg
+setup.py
+crysx_nn/__init__.py
+crysx_nn/activation.py
+crysx_nn/loss.py
+crysx_nn/network.py
+crysx_nn.egg-info/PKG-INFO
+crysx_nn.egg-info/SOURCES.txt
+crysx_nn.egg-info/dependency_links.txt
+crysx_nn.egg-info/requires.txt
+crysx_nn.egg-info/top_level.txt
