@@ -257,8 +257,9 @@ Blog: [https://bragitoff.com](https://bragitoff.com/)
 ## Acknowledgments
 
 * Lecture notes by [Prof. Dr. Bernd Bürgmann](https://www.physik.uni-jena.de/en/bruegmann)
-* []()
-* []()
+* [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com) by [Michael Nielsen](https://michaelnielsen.org)
+* [A high-bias, low-variance introduction to Machine Learning for physicists](https://arxiv.org/abs/1803.08823) by Mehta et al., 2019
+* [Deep Learning](https://www.deeplearningbook.org) by Goodfellow et al., 2016
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
