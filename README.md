@@ -110,16 +110,11 @@ The goal was to create a framework that is efficient yet easy to understand, so 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+You need to have `python3` installed along with `pip`.
 
 ### Installation
 
@@ -137,6 +132,25 @@ There are many ways to install `crysx_nn`
    pip install .
    ```
 3. Install the latest development version without `git`.
+   ```sh
+   pip install --upgrade https://github.com/manassharma07/crysx_nn/tarball/main
+   ```
+
+   Check if the installation was successful by trying to import the package 
+   ```sh
+   python3
+   ```
+   ```python
+    Python 3.7.11 (default, Jul 27 2021, 07:03:16) 
+    [Clang 10.0.0 ] :: Anaconda, Inc. on darwin
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> import crysx_nn
+    >>> crysx_nn.__version__
+    '0.1.0'
+    >>> 
+   ```
+
+   Finally try running the example script for simulating logic gates like AND, XOR, NAND, and OR.
    ```sh
    pip install --upgrade https://github.com/manassharma07/crysx_nn/tarball/main
    ```
