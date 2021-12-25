@@ -138,11 +138,7 @@ There are many ways to install `crysx_nn`
    ```
 3. Install the latest development version without `git`.
    ```sh
-   pip install --upgrade https://github.com/manassharma07/crysx_nn/tarball/master
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+   pip install --upgrade https://github.com/manassharma07/crysx_nn/tarball/main
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
