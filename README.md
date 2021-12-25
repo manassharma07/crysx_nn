@@ -39,7 +39,7 @@
     <a href="https://github.com/manassharma07/crysx_nn"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/manassharma07/crysx_nn/blob/main/examples/Simulating_Logic_Gates.ipynb">View Demo</a>
     ·
     <a href="https://github.com/manassharma07/crysx_nn/issues">Report Bug</a>
     ·
