@@ -7,6 +7,10 @@ https://www.bragitoff.com
 '''
 from numba import vectorize,jit,njit,prange,set_num_threads,get_num_threads 
 import numpy as np
+try:
+    import cupy as cp                     
+except ImportError:
+    print('CuPy could not be imported!')
 
 @njit(cache=True,fastmath=True)
 def MSE_loss(outi, out0):
@@ -65,3 +69,61 @@ def BCE_loss_grad(predictions, targets):
     """
     # https://math.stackexchange.com/questions/2503428/derivative-of-binary-cross-entropy-why-are-my-signs-not-right
     return -(np.divide(targets,predictions)-np.divide(1-targets,1-predictions))/predictions.shape[1]
+
+
+##-----------CUPY---------------
+def MSE_loss_cupy(outi, out0):
+    """
+    Computes Mean Squared error/loss between targets
+    and predictions. 
+    Input: predictions (N, k) ndarray (N: no. of samples, k: no. of output nodes)
+          targets (N, k) ndarray        (N: no. of samples, k: no. of output nodes)
+    Returns: scalar
+    Note: The averaging is only done over the output nodes and not over the samples in a batch.
+    Therefore, to get an answer similar to PyTorch, one must divide the result by the batch size.
+    """
+    
+    return cp.sum((outi-out0)**2)/outi.shape[1]
+
+
+def MSE_loss_grad_cupy(outi, out0):
+    """
+    Computes mean squared error gradient between targets (encoded as one-hot vectors)
+    and predictions. 
+    Input: predictions (N, k) ndarray (N: no. of samples, k: no. of output nodes)
+          targets (N, k) ndarray        (N: no. of samples, k: no. of output nodes)
+    Returns: (N,k) ndarray
+    Note: The averaging is only done over the output nodes and not over the samples in a batch.
+    Therefore, to get an answer similar to PyTorch, one must divide the result by the batch size.
+    """
+    
+    return 2*(outi-out0)/outi.shape[1]
+
+def BCE_loss_cupy(predictions, targets, epsilon=1e-12):
+    """
+    Computes binary cross entropy between targets (encoded as one-hot vectors)
+    and predictions. 
+    Input: predictions (N, k) ndarray (N: no. of samples, k: no. of output nodes)
+          targets (N, k) ndarray        (N: no. of samples, k: no. of output nodes)
+    Returns: scalar
+    Note: The averaging is only done over the output nodes and not over the samples in a batch.
+    Therefore, to get an answer similar to PyTorch, one must divide the result by the batch size.
+    """
+    predictions = cp.clip(predictions, epsilon, 1. - epsilon)
+#    N = predictions.shape[0]
+    ce = -cp.sum(targets*cp.log(predictions+epsilon)+(1-targets)*cp.log(1-predictions+epsilon))/predictions.shape[1]#/N
+    return ce
+
+
+def BCE_loss_grad_cupy(predictions, targets):
+    """
+    Computes binary cross entropy gradient between targets (encoded as one-hot vectors)
+    and predictions. 
+    Input: predictions (N, k) ndarray (N: no. of samples, k: no. of output nodes)
+          targets (N, k) ndarray        (N: no. of samples, k: no. of output nodes)
+    Returns: (N,k) ndarray
+    Note: The averaging is only done over the output nodes and not over the samples in a batch.
+    Therefore, to get an answer similar to PyTorch, one must divide the result by the batch size.
+    """
+    # https://math.stackexchange.com/questions/2503428/derivative-of-binary-cross-entropy-why-are-my-signs-not-right
+    return -(cp.divide(targets,predictions)-cp.divide(1-targets,1-predictions))/predictions.shape[1]
