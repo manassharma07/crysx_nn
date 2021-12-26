@@ -391,12 +391,17 @@ def tempEval(a,b,n):
     return out
 
 @njit(cache=False,fastmath=True, parallel=False) #Works faster without tha parallel flag
-def softmaxTimesVector(a,b):
+def softmaxTimesVector_(a,b):
     output = np.zeros((a.shape[0],a.shape[1]),dtype=np.float32)
     for i in prange(a.shape[0]):
-#         a_temp = 
-#         output[i,:] = np.dot(a[i,:,:], b[i,:]).T 
         output[i] = np.dot(a[i], b[i])
+    return output
+
+
+def softmaxTimesVector(a,b): 
+    ## Both the following methods are equally fast and give correct results
+    # output = np.einsum('ijk,ik->ij',a,b)
+    output = (a @ b[..., np.newaxis])[..., 0]
     return output
 
 @njit(cache=True,fastmath=True)
@@ -791,11 +796,9 @@ def back_propagation_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
     return derWeights, derBiases, newWeights, newBiases
 
 def softmaxTimesVector_cupy(a,b):
-    output = cp.zeros((a.shape[0],a.shape[1]),dtype=cp.float32)
-    for i in range(a.shape[0]):
-#         a_temp = 
-#         output[i,:] = np.dot(a[i,:,:], b[i,:]).T 
-        output[i] = cp.dot(a[i], b[i])
+    ## Both the following methods are equally fast and give correct results
+    output = cp.einsum('ijk,ik->ij',a,b)
+    # output = (a @ b[..., cp.newaxis])[..., 0]
     return output
 
 def nn_optimize_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss, gradErrorFunc=loss.MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
