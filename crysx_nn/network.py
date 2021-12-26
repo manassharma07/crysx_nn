@@ -399,6 +399,7 @@ def softmaxTimesVector_(a,b):
 
 
 def softmaxTimesVector(a,b): 
+    # Reference: https://stackoverflow.com/questions/59289754/numpy-multiply-3d-array-with-2d-array
     ## Both the following methods are equally fast and give correct results
     # output = np.einsum('ijk,ik->ij',a,b)
     output = (a @ b[..., np.newaxis])[..., 0]
@@ -796,6 +797,7 @@ def back_propagation_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
     return derWeights, derBiases, newWeights, newBiases
 
 def softmaxTimesVector_cupy(a,b):
+    # Reference: https://stackoverflow.com/questions/59289754/numpy-multiply-3d-array-with-2d-array
     ## Both the following methods are equally fast and give correct results
     output = cp.einsum('ijk,ik->ij',a,b)
     # output = (a @ b[..., cp.newaxis])[..., 0]
