@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name = "crysx_nn",
-    version = "0.1.3", # DONT FORGET TO CHANGE THE VERSION IN __INIT__.py
+    version = "0.1.4", # DONT FORGET TO CHANGE THE VERSION IN __INIT__.py
     author = "Manas Sharma",
     author_email = "feedback@bragitoff.com",
     description = ("A simplistic and efficient pure-python neural network library from Phys Whiz."),
