@@ -39,11 +39,15 @@ def Softmax_grad(x): # Best implementation (VERY FAST)
     a = np.eye(s.shape[-1])
     temp1 = np.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=np.float32)
     temp2 = np.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=np.float32)
+    # Einsum is unsupported with Numba (nopython mode)
+    # temp1 = np.einsum('ij,jk->ijk',s,a)
+    # temp2 = np.einsum('ij,ik->ijk',s,s)
     for i in range(s.shape[0]):
         for j in range(s.shape[1]):
             for k in range(s.shape[1]):
                 temp1[i,j,k] = s[i,j]*a[j,k]
                 temp2[i,j,k] = s[i,j]*s[i,k]
+    
     return temp1-temp2
 
 @njit(cache=True,fastmath=True)
@@ -102,11 +106,13 @@ def Softmax_grad_cupy(x): # Best implementation (VERY FAST)
     a = cp.eye(s.shape[-1])
     temp1 = cp.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=cp.float32)
     temp2 = cp.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=cp.float32)
-    for i in range(s.shape[0]):
-        for j in range(s.shape[1]):
-            for k in range(s.shape[1]):
-                temp1[i,j,k] = s[i,j]*a[j,k]
-                temp2[i,j,k] = s[i,j]*s[i,k]
+    # for i in range(s.shape[0]):
+    #     for j in range(s.shape[1]):
+    #         for k in range(s.shape[1]):
+    #             temp1[i,j,k] = s[i,j]*a[j,k]
+    #             temp2[i,j,k] = s[i,j]*s[i,k]
+    temp1 = cp.einsum('ij,jk->ijk',s,a)
+    temp2 = cp.einsum('ij,ik->ijk',s,s)
     return temp1-temp2
 
 def Sigmoid_cupy(x):
