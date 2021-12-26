@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: crysx-nn
-Version: 0.1.1
+Version: 0.1.3
 Summary: A simplistic and efficient pure-python neural network library from Phys Whiz.
 Home-page: https://github.com/manassharma07/crysx_nn
 Author: Manas Sharma
 Author-email: feedback@bragitoff.com
 License: MIT
-Download-URL: https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.1.tar.gz
+Download-URL: https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.3.tar.gz
 Keywords: neural network,pure python,crysx,numba nn,machine learning,ML,deep learning,deepL,MLP,perceptron,phys whiz,manas sharma,bragitoff,crysx
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
@@ -68,13 +68,13 @@ License-File: LICENSE
   <p align="center">
     A simplistic and efficient pure-python neural network library from Phys Whiz.
     <br />
-    <a href="https://github.com/manassharma07/crysx_nn"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/manassharma07/crysx_nn"><strong>Explore the docs Â»</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
-    ·
+    <a href="https://github.com/manassharma07/crysx_nn/blob/main/examples/Simulating_Logic_Gates.ipynb">View Demo</a>
+    Â·
     <a href="https://github.com/manassharma07/crysx_nn/issues">Report Bug</a>
-    ·
+    Â·
     <a href="https://github.com/manassharma07/crysx_nn/issues">Request Feature</a>
   </p>
 </div>
@@ -387,7 +387,7 @@ Blog: [https://bragitoff.com](https://bragitoff.com/)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* Lecture notes by [Prof. Dr. Bernd Bürgmann](https://www.physik.uni-jena.de/en/bruegmann)
+* Lecture notes by [Prof. Dr. Bernd BÃ¼rgmann](https://www.physik.uni-jena.de/en/bruegmann)
 * [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com) by [Michael Nielsen](https://michaelnielsen.org)
 * [A high-bias, low-variance introduction to Machine Learning for physicists](https://arxiv.org/abs/1803.08823) by Mehta et al., 2019
 * [Deep Learning](https://www.deeplearningbook.org) by Goodfellow et al., 2016

@@ -6,3 +6,4 @@ opt_einsum
 nnv
 matplotlib
 numexpr
+tomli
