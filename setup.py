@@ -13,14 +13,14 @@ def read(fname):
 
 setup(
     name = "crysx_nn",
-    version = "0.1.5", # DONT FORGET TO CHANGE THE VERSION IN __INIT__.py
+    version = "0.1.6", # DONT FORGET TO CHANGE THE VERSION IN __INIT__.py
     author = "Manas Sharma",
     author_email = "feedback@bragitoff.com",
     description = ("A simplistic and efficient pure-python neural network library from Phys Whiz."),
     license = "MIT",
     keywords = ["neural network", "pure python", "crysx", "numba nn", "machine learning", "ML", "deep learning", "deepL", "MLP", "perceptron","phys whiz","manas sharma","bragitoff","crysx"],
     url = "https://github.com/manassharma07/crysx_nn",
-    download_url = 'https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.5.tar.gz',
+    download_url = 'https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.6.tar.gz',
     packages=['crysx_nn'],
     long_description=read('README.md'),
     long_description_content_type='text/markdown',

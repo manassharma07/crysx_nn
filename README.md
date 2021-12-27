@@ -123,7 +123,7 @@ You need to have `python3` installed along with `pip`.
 
 There are many ways to install `crysx_nn`
 
-1. Install the release (stable) version from [PyPi](https://example.com)
+1. Install the release (stable) version from [PyPi](https://pypi.org/project/crysx-nn/)
     ```sh
     pip install crysx_nn
     ```

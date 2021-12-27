@@ -1,2 +1,7 @@
 crysx_nn/__pycache__/
 crysx_nn.egg-info/
+.ipynb_checkpoints
+benchmarks_tests/.ipynb_checkpoints/
+benchmarks_tests/MNIST/
+examples/.ipynb_checkpoints/
+dist/
