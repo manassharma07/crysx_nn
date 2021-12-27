@@ -34,7 +34,7 @@
 <h3 align="center">crysx_nn</h3>
 
   <p align="center">
-    A simplistic and efficient pure-python neural network library from Phys Whiz.
+    A simplistic and efficient pure-python neural network library from Phys Whiz with CPU and GPU support.
     <br />
     <a href="https://github.com/manassharma07/crysx_nn"><strong>Explore the docs »</strong></a>
     <br />
@@ -67,6 +67,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#features">Features</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -86,7 +87,7 @@
 Neural networks are an integral part of machine learning.
 The project provides an easy-to-use, yet efficient implementation that can be used in your projects or for teaching/learning purposes.
 
-The library is written in pure-python with some optimizations using numpy, opt_einsum and numba. 
+The library is written in pure-python with some optimizations using numpy, opt_einsum, and numba when using CPU and cupy for CUDA support. 
 
 The goal was to create a framework that is efficient yet easy to understand, so that everyone can see and learn about what goes inside a neural network. After all, the project did spawn from a semester project on [CP_IV: Machine Learning course](https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&status=init&vmfile=no&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung&veranstaltung.veranstid=187951) at the [University of Jena, Germany](https://www.uni-jena.de/en/).
 
@@ -97,6 +98,7 @@ The goal was to create a framework that is efficient yet easy to understand, so 
 
 ### Built With
 
+* [Cupy](https://cupy.dev/)
 * [NumPy](https://numpy.org)
 * [numba](https://numba.pydata.org)
 * [opt_einsum](https://optimized-einsum.readthedocs.io/en/stable/)
@@ -284,8 +286,29 @@ Output:
 ![](https://www.bragitoff.com/wp-content/uploads/2021/12/Screenshot-2021-12-25-at-18.56.01.png)
 _For more examples, please refer to the [Examples Section](https://github.com/manassharma07/crysx_nn/tree/main/examples)_
 
+CrysX-NN (crysx_nn) also provides CUDA support by using cupy versions of all the features ike activation functions, loss functions, neural network calculations, etc.
+Note: For small networks the Cupy versions may actually be slower than CPU versions. But the benefit becomes evident as you go beyond 1.5 Million parameters.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+
+
+<!-- Features -->
+## Features
+
+- [x] Efficient implementations of activation functions and their gradients
+    - [x] Sigmoid, Sigmoid_grad
+    - [x] ReLU, ReLU_grad
+    - [x] Softmax, Softmax_grad  
+- [x] Efficient implementations of loss functions
+    - [x] Mean squared error
+    - [x] Binary cross entropy  
+- [x] Neural network optimization using 
+    - [x] Stochastic Gradient Descent
+- [x] Support for batched inputs, i.e., supplying a matrix of inputs where the collumns correspond to features and rows to the samples
+- [x] Support for GPU through Cupy `pip install cupy-cuda102` (Tested with CUDA 10.2)
+- [x] JIT compiled functions when possible for efficiency
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- ROADMAP -->
