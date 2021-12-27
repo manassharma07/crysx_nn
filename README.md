@@ -98,12 +98,12 @@ The goal was to create a framework that is efficient yet easy to understand, so 
 
 ### Built With
 
-* [Cupy](https://cupy.dev/)
-* [NumPy](https://numpy.org)
-* [numba](https://numba.pydata.org)
-* [opt_einsum](https://optimized-einsum.readthedocs.io/en/stable/)
-* [matplotlib](https://matplotlib.org)
-* [nnv](https://pypi.org/project/nnv/)
+* [Cupy](https://cupy.dev/) (Optional)
+* [NumPy](https://numpy.org) (Required)
+* [numba](https://numba.pydata.org) (Required)
+* [opt_einsum](https://optimized-einsum.readthedocs.io/en/stable/) (Required)
+* [matplotlib](https://matplotlib.org) (Required)
+* [nnv](https://pypi.org/project/nnv/) (Required)
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -357,7 +357,6 @@ Don't forget to give the project a star! Thanks again!
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- CONTACT -->
