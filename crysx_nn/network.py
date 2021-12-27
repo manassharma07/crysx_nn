@@ -445,7 +445,12 @@ def back_propagation(z, a, sigmaPrime, nLayers, nSamples, weights, biases, eeta,
     newBiases[nLayers-1] = biases[nLayers-1] - eeta*derBiases[nLayers-1]
     
     for l in range(nLayers-1,0,-1):
-        temp = np.array([np.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
+        # print(weights[l].T.shape)
+        # print(delta[l+1].shape)
+        # return
+        temp = np.einsum('ik,lk->li',weights[l].T, delta[l+1])
+        # temp = np.array([np.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
+        # print(temp.shape)
 #         temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
 #         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
         sigmaPrime_layer = act_func_grad_dict[sigmaPrime[l-1]] # Act func gradient for this layer
@@ -493,7 +498,8 @@ def back_propagation_fast(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
     newBiases[nLayers-1] = biases[nLayers-1] - eeta*derBiases[nLayers-1]
     ioptexpr=1
     for l in range(nLayers-1,0,-1):
-        temp = np.array([np.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
+        temp = np.einsum('ik,lk->li',weights[l].T, delta[l+1])
+        # temp = np.array([np.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
 #         temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
 #         temp = tempEval(weights[l],delta[l+1],nSamples)
 #         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
@@ -780,7 +786,8 @@ def back_propagation_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
     newBiases[nLayers-1] = biases[nLayers-1] - eeta*derBiases[nLayers-1]
     
     for l in range(nLayers-1,0,-1):
-        temp = cp.array([cp.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
+        temp = cp.einsum('ik,lk->li',weights[l].T, delta[l+1])
+        # temp = cp.array([cp.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
 #         temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
 #         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
         sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
