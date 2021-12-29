@@ -26,10 +26,6 @@ except ImportError:
     print('CuPy could not be imported!')
 
 
-# act_func_dict = {'Sigmoid':Sigmoid,'ReLU':ReLU,'ELU':ELU, 'Hardshrink' : Hardshrink,'Hardsigmoid':Hardsigmoid,\
-#                  'Hardtanh':Hardtanh,'Hardswish':Hardswish,'LeakyReLU':LeakyReLU,'LogSigmoid':LogSigmoid,\
-#                  'Tanh':Tanh,'Softmax':Softmax,'Softmin':Softmin,'LogSoftmax':LogSoftmax,'Mish':Mish,\
-#                  'Swish':Swish,'Exponential':Exponential}
 
 
 
@@ -55,150 +51,6 @@ def visualize(nInputs, neurons_per_layer, activation_func_names):
     
 
 @njit(cache=True,fastmath=True)
-def tanhOffsetAct(x):
-    return 0.5*(1+np.tanh(x))
-
-@njit(cache=True,fastmath=True)
-def Sigmoid(x):
-    return 1/(1+np.exp(-x))
-#     return ne.evaluate('1/(1+exp(x))')
-
-@njit(cache=True,fastmath=True)
-def ReLU(x):
-    return np.max(0,x)
-
-@njit(cache=True,fastmath=True)
-def Softmax1(x):
-    """Compute the softmax of vector x."""
-#     return np.exp(x) / np.sum(np.exp(x), axis=0)
-#     More stable
-    exps = np.exp(x - x.max())
-    return exps / np.sum(exps, axis=0)
-
-# correct solution:
-@njit(cache=True,fastmath=True)  # Best implementation (VERY FAST)
-def Softmax(x):
-    """Works for 2D arrays only(rows for samples, columns for nodes/outputs)"""
-    e_x = np.exp(x - np.max(x))
-#     return e_x / e_x.sum(axis=1, keepdims=True) # only difference
-    return e_x / e_x.sum(axis=1).reshape((-1, 1)) # Alternative of keepdims=True for Numba compatible
-
-def SoftmaxAutoGrad(x):
-    """Works for 2D arrays only(rows for samples, columns for outputs)"""
-    e_x = anp.exp(x - anp.max(x))
-    return e_x / e_x.sum(axis=1, keepdims=True) # only difference
-
-# my (correct) solution:
-def Softmax2(z):
-    assert len(z.shape) == 2
-    s = np.max(z, axis=1)
-    s = s[:, np.newaxis] # necessary step to do broadcasting
-    e_x = np.exp(z - s)
-    div = np.sum(e_x, axis=1)
-    div = div[:, np.newaxis] # dito
-    return e_x / div
-
-def Stable_softmax(x):
-    '''Works for both 1d and 2d arrays'''
-    z = x - np.max(x, axis=-1, keepdims=True)
-    numerator = np.exp(z)
-    denominator = np.sum(numerator, axis=-1, keepdims=True)
-    softmax = numerator / denominator
-    return softmax
-
-
-
-
-
-@njit(cache=True,fastmath=True)
-def errorFunc(outi, out0):
-    '''
-    Error function
-    out0 is the expected output (exact/ideal)
-    outi is the calculated output
-    '''
-    
-    return np.sum((outi-out0)**2)/outi.shape[1]
-
-def errorFunc_(outi, out0):
-    '''
-    Error function
-    out0 is the expected output (exact/ideal)
-    outi is the calculated output
-    '''
-    
-    return anp.sum((outi-out0)**2)/outi.shape[1]
-
-@njit(cache=True,fastmath=True)
-def errorFuncGrad(outi, out0):
-    '''
-    Error function
-    out0 is the expected output (exact/ideal)
-    outi is the calculated output
-    returns matrix
-    '''
-    
-    return 2*(outi-out0)/outi.shape[1]
-
-gradErrorFunc = errorFuncGrad
-
-@njit(cache=True,fastmath=True)
-def tanhOffsetActFuncPrime(x):
-    return 1/(np.cosh(2*x)+1)
-
-@njit(cache=True,fastmath=True)
-def Sigmoid_grad(x):
-    return np.exp(-x)/(np.exp(-x)+1)**2
-#     return ne.evaluate('exp(-x)/(exp(-x)+1)**2')
-
-@njit(cache=True,fastmath=True)
-def ReLU_grad(x):
-    return np.max(0,x)
-
-@njit(cache=True,fastmath=True)
-def ReLUdActFuncPrime(x):
-    return np.greater(z, 0).astype(int)
-#     return return np.heaviside(x, 0)
-#     return  (x > 0) * 1
-
-@njit(cache=True,fastmath=True)
-def SoftmaxActFuncPrime(x):
-    s = x.reshape(-1,1)
-    return np.diagflat(s) - np.dot(s, s.T)
-
-# @njit(cache=False,fastmath=True)
-def SoftmaxActFuncPrime1(x):
-    x = Softmax(x)
-    s = x.reshape(-1,1)
-    return np.diagflat(s) - np.dot(s, s.T)
-
-# @njit(cache=False,fastmath=True)    
-def Softmax_dash(x):
-    '''Expects input to be an Nx1 2d array'''
-    I = np.eye(x.shape[0])
-    return Softmax(x) * (I - Softmax(x).T)
-
-def SoftmaxActFuncPrime(x):
-    signal = Softmax(x)
-    J = - signal[..., None] * signal[:, None, :] # off-diagonal Jacobian
-    iy, ix = np.diag_indices_from(J[0])
-    J[:, iy, ix] = signal * (1. - signal) # diagonal
-    return J.sum(axis=1) # sum across-rows for each sample
-
-# @njit(cache=False,fastmath=True)  
-def Softmax_d(x):
-#     return softmax_broadcast(z) * (1 - softmax_broadcast(z))
-    s = Softmax(x)
-    return s * (1 - s)
-
-def cross_ent(y, yhat):
-    return -1 * np.sum(y * np.log(yhat+1e-16))
-
-def new(a):
-    return a
-
-
-@njit(cache=True,fastmath=True)
 def cross_entropy(predictions, targets, epsilon=1e-12):
     """
     Computes cross entropy between targets (encoded as one-hot vectors)
@@ -212,31 +64,7 @@ def cross_entropy(predictions, targets, epsilon=1e-12):
     ce = -np.sum(targets*np.log(predictions+1e-9))/predictions.shape[1]#/N
     return ce
 
-@njit(cache=True,fastmath=True)
-def binary_cross_entropy(predictions, targets, epsilon=1e-12):
-    """
-    Computes cross entropy between targets (encoded as one-hot vectors)
-    and predictions. 
-    Input: predictions (N, k) ndarray
-          targets (N, k) ndarray        
-    Returns: scalar
-    """
-    predictions = np.clip(predictions, epsilon, 1. - epsilon)
-#    N = predictions.shape[0]
-    ce = -np.sum(targets*np.log(predictions+epsilon)+(1-targets)*np.log(1-predictions+epsilon))/predictions.shape[1]#/N
-    return ce
 
-@njit(cache=True,fastmath=True)
-def binary_cross_entropy_grad(predictions, targets):
-    """
-    Computes cross entropy gradient between targets (encoded as one-hot vectors)
-    and predictions. 
-    Input: predictions (N, k) ndarray
-          targets (N, k) ndarray        
-    Returns: matrix
-    """
-    # https://math.stackexchange.com/questions/2503428/derivative-of-binary-cross-entropy-why-are-my-signs-not-right
-    return -(np.divide(targets,predictions)-np.divide(1-targets,1-predictions))/predictions.shape[1]
 
 @njit(cache=True,fastmath=True)
 def cross_entropy_grad(predictions, targets):
@@ -268,71 +96,12 @@ cross_entropy_grad2 = grad(cross_entropy2,0)
 def cross_ent_d(y, yhat):
     return yhat - y
 
-# @njit(cache=False,fastmath=True)  
-def Softmax_broadcast(z):
-    assert len(z.shape) == 2
-    s = np.max(z, axis=1)
-    s = s[:, np.newaxis] # necessary step to do broadcasting
-    e_x = np.exp(z - s)
-    div = np.sum(e_x, axis=1)
-    div = div[:, np.newaxis] # dito
-    return e_x / div
 
-def Softmax_grad2(x): 
-    # Take the derivative of softmax element w.r.t the each logit which is usually Wi * X
-    # input s is softmax value of the original input x. 
-    # s.shape = (1, n) 
-    # i.e. s = np.array([0.3, 0.7]), x = np.array([0, 1])
-    # initialize the 2-D jacobian matrix.
-    s = Softmax(x)
-    jacobian_m = np.diag(s)
-    for i in range(len(jacobian_m)):
-        for j in range(len(jacobian_m)):
-            if i == j:
-                jacobian_m[i][j] = s[i] * (1-s[i])
-            else: 
-                jacobian_m[i][j] = -s[i]*s[j]
-    return jacobian_m
-
-
-def Softmax_jacob(x):
-    s = Softmax(x)
-    return np.einsum('ij,jk->ijk', s, np.eye(s.shape[-1])) - np.einsum('ij,ik->ijk', s, s)
-#     return contract('ij,jk->ijk', s, np.eye(s.shape[-1])) - contract('ij,ik->ijk', s, s) #SLOWER
-
-@njit(cache=True,fastmath=True)
-def Softmax_grad(x): # Best implementation (VERY FAST)
-    '''Returns the jacobian of the Softmax function for the given set of inputs.
-    Inputs:
-    x: should be a 2d array where the rows correspond to the samples
-        and the columns correspond to the nodes.
-    '''
-    s = Softmax(x)
-    a = np.eye(s.shape[-1])
-    temp1 = np.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=np.float32)
-    temp2 = np.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=np.float32)
-    for i in range(s.shape[0]):
-        for j in range(s.shape[1]):
-            for k in range(s.shape[1]):
-                temp1[i,j,k] = s[i,j]*a[j,k]
-                temp2[i,j,k] = s[i,j]*s[i,k]
-    return temp1-temp2
-
-# @njit(cache=False,fastmath=True)
-def Jsoftmax(X):
-    sh = X.shape
-    sm = Softmax(X)
-    DM = sm.reshape(sh[0],-1,1) * np.diag(np.ones(sh[1])) # Diagonal matrices
-#     OP = np.matmul(sm.reshape(sh[0],-1,1), sm.reshape(sh[0],1,-1)) # Outer products
-#     OP = np.dot(sm.reshape(sh[0],-1,1), sm.reshape(sh[0],1,-1))
-    OP = sm.reshape(sh[0],-1,1) @ sm.reshape(sh[0],1,-1)
-    Jsm = DM - OP
-    return Jsm
 
 
 # @njit('float32, (float32[:]),(float32[:]), (float32[:]), (float32[:])',cache=False,fastmath=True, parallel=True)
 @njit(cache=True,fastmath=True, parallel=False)
-def updateWeightsBiases(eeta, weights, derWeights, biases, derBiases):
+def updateWeightsBiases(nLayers, eeta, weights, derWeights, biases, derBiases):
     newWeights = weights
     newBiases = biases
     for i in range(nLayers):
@@ -382,7 +151,7 @@ def forward_feed(x, nLayers, weights, biases, activationFunc):
         
     return a, z
 
-@njit(cache=True,fastmath=True,parallel=False)
+@njit(cache=True,fastmath=True,parallel=False) #Works faster without tha parallel flag
 def tempEval(a,b,n):
     out = np.empty((n,a.shape[1]),dtype=np.float32)
     for i in range(n):
