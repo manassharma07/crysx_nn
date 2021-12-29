@@ -303,7 +303,7 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
     - [x] Tanh, Tanh_grad 
     - [x] Tanh_offset, Tanh_offset_grad  
     - [x] Identity, Identity_grad 
-- [x] Efficient implementations of loss functions
+- [x] Efficient implementations of loss functions and their gradients
     - [x] Mean squared error
     - [x] Binary cross entropy  
 - [x] Neural network optimization using 
