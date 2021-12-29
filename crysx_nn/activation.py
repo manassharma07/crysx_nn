@@ -140,8 +140,11 @@ def Softplus(x):
     # np.log(1 + np.exp(-np.abs(x))) + np.maximum(x,0)
 
 @njit(cache=True,fastmath=True)
-def Softplus_grad(x): 
-    return np.divide(1.,1.+np.exp(-x))
+def Softplus_grad(x): # This is simply the sigmoid function
+    # The following would be susceptible to over/underflow just like th Sigmoid function
+    # return np.divide(1.,1.+np.exp(-x))
+    # Use this instead
+    return Sigmoid(x)
     
 
 
@@ -233,9 +236,12 @@ def Identity_grad_cupy(x):
 @njit(cache=True,fastmath=True)
 def Softplus_cupy(x): 
     # Reference: https://stackoverflow.com/questions/44230635/avoid-overflow-with-softplus-function-in-python
-    return np.log1p(np.exp(-np.abs(x))) + np.maximum(x, 0)
+    return cp.log1p(cp.exp(-cp.abs(x))) + cp.maximum(x, 0)
     # np.log(1 + np.exp(-np.abs(x))) + np.maximum(x,0)
 
 @njit(cache=True,fastmath=True)
-def Softplus_grad_cupy(x): 
-    return np.divide(1.,1.+np.exp(-x))
+def Softplus_grad_cupy(x): # This is simply the sigmoid function
+    # The following would be susceptible to over/underflow just like th Sigmoid function
+    # return cp.divide(1.,1.+cp.exp(-x))
+    # Use this instead
+    return Sigmoid_cupy(x)
