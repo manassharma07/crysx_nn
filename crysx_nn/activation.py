@@ -12,7 +12,7 @@ https://www.bragitoff.com
 # https://towardsdatascience.com/activation-functions-neural-networks-1cbd9f8d91d6
 
 # List of PyTorch Activation functions https://pytorch.org/docs/stable/nn.html#non-linear-activations-weighted-sum-nonlinearity
-# List of TensorFlow Activation Functions 
+# List of TensorFlow Activation Functions https://www.tensorflow.org/api_docs/python/tf/keras/activations
 
 from numba import vectorize,jit,njit,prange,set_num_threads,get_num_threads 
 import numpy as np
@@ -212,30 +212,30 @@ def ReLU_grad_cupy(x):
     return cp.greater(x, 0.).astype(cp.float32)
 
 
-def Tanh_offset(x):
+def Tanh_offset_cupy(x):
     return 0.5*(1.+cp.tanh(x))
 
-def Tanh_offset_grad(x):
+def Tanh_offset_grad_cupy(x):
     return 1./(cp.cosh(2.*x)+1.)
 
-def Tanh(x):
+def Tanh_cupy(x):
     return cp.tanh(x)
 
-def Tanh_grad(x):
+def Tanh_grad_cupy(x):
     return 1.-cp.tanh(x)**2 # sech^2{x}
 
-def Identity(x):
+def Identity_cupy(x):
     return x
 
-def Identity_grad(x):
+def Identity_grad_cupy(x):
     return cp.ones(x.shape, dtype=cp.float32)
 
 @njit(cache=True,fastmath=True)
-def Softplus(x): 
+def Softplus_cupy(x): 
     # Reference: https://stackoverflow.com/questions/44230635/avoid-overflow-with-softplus-function-in-python
     return np.log1p(np.exp(-np.abs(x))) + np.maximum(x, 0)
     # np.log(1 + np.exp(-np.abs(x))) + np.maximum(x,0)
 
 @njit(cache=True,fastmath=True)
-def Softplus_grad(x): 
+def Softplus_grad_cupy(x): 
     return np.divide(1.,1.+np.exp(-x))

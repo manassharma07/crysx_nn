@@ -299,6 +299,10 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
     - [x] Sigmoid, Sigmoid_grad
     - [x] ReLU, ReLU_grad
     - [x] Softmax, Softmax_grad  
+    - [x] Softplus, Sofplus_grad  
+    - [x] Tanh, Tanh_grad 
+    - [x] Tanh_offset, Tanh_offset_grad  
+    - [x] Identity, Identity_grad 
 - [x] Efficient implementations of loss functions
     - [x] Mean squared error
     - [x] Binary cross entropy  
