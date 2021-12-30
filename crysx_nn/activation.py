@@ -233,13 +233,11 @@ def Identity_cupy(x):
 def Identity_grad_cupy(x):
     return cp.ones(x.shape, dtype=cp.float32)
 
-@njit(cache=True,fastmath=True)
 def Softplus_cupy(x): 
     # Reference: https://stackoverflow.com/questions/44230635/avoid-overflow-with-softplus-function-in-python
     return cp.log1p(cp.exp(-cp.abs(x))) + cp.maximum(x, 0)
     # np.log(1 + np.exp(-np.abs(x))) + np.maximum(x,0)
 
-@njit(cache=True,fastmath=True)
 def Softplus_grad_cupy(x): # This is simply the sigmoid function
     # The following would be susceptible to over/underflow just like th Sigmoid function
     # return cp.divide(1.,1.+cp.exp(-x))
