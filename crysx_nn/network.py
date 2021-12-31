@@ -27,8 +27,12 @@ except ImportError:
 
 
 
+def initParams(nInputs, neurons_per_layer, activation_func_names):
+    nLayers = len(neurons_per_layer)
+    weights = []
+    biases = []
 
-
+    return weights, biases
 
 
 def visualize(nInputs, neurons_per_layer, activation_func_names):
@@ -144,22 +148,22 @@ def forward_feed(x, nLayers, weights, biases, activationFunc):
     z = [None] * nLayers
     a[0] = x
     for l in range(1,nLayers+1):
-        z[l-1] = np.einsum('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
-#         z[l-1] = contract('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
+        # z[l-1] = np.einsum('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
+        z[l-1] = contract('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
         actFunc_layer = act_func_dict[activationFunc[l-1]] #Activation function for this layer
         a[l] = actFunc_layer(z[l-1])
         
     return a, z
 
-@njit(cache=True,fastmath=True,parallel=False) #Works faster without tha parallel flag
+@njit(cache=True,fastmath=True,parallel=True) #Works faster without tha parallel flag
 def tempEval(a,b,n):
     out = np.empty((n,a.shape[1]),dtype=np.float32)
-    for i in range(n):
+    for i in prange(n):
 #     for i in prange(n):
         out[i] = np.dot(a.T, b[i,:]).T
     return out
 
-@njit(cache=False,fastmath=True, parallel=False) #Works faster without tha parallel flag
+@njit(cache=True,fastmath=True, parallel=True) #Works faster without tha parallel flag
 def softmaxTimesVector_(a,b):
     output = np.zeros((a.shape[0],a.shape[1]),dtype=np.float32)
     for i in prange(a.shape[0]):
@@ -170,8 +174,8 @@ def softmaxTimesVector_(a,b):
 def softmaxTimesVector(a,b): 
     # Reference: https://stackoverflow.com/questions/59289754/numpy-multiply-3d-array-with-2d-array
     ## Both the following methods are equally fast and give correct results
-    # output = np.einsum('ijk,ik->ij',a,b)
-    output = (a @ b[..., np.newaxis])[..., 0]
+    output = contract('ijk,ik->ij',a,b)
+    # output = (a @ b[..., np.newaxis])[..., 0]
     return output
 
 @njit(cache=True,fastmath=True)
@@ -267,9 +271,9 @@ def back_propagation_fast(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
     newBiases[nLayers-1] = biases[nLayers-1] - eeta*derBiases[nLayers-1]
     ioptexpr=1
     for l in range(nLayers-1,0,-1):
-        temp = np.einsum('ik,lk->li',weights[l].T, delta[l+1])
+        temp = contract('ik,lk->li',weights[l].T, delta[l+1])
         # temp = np.array([np.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
-#         temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
+        # temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
 #         temp = tempEval(weights[l],delta[l+1],nSamples)
 #         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
         sigmaPrime_layer = act_func_grad_dict[sigmaPrime[l-1]] # Act func gradient for this layer

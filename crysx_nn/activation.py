@@ -82,7 +82,7 @@ def Sigmoid(x): # Also known as logistic/soft step or even expit in scipy.specia
     # Works only for 2D arrays
     output = np.zeros((x.shape[0],x.shape[1]),dtype=x.dtype)
     for i in prange(x.shape[0]):
-        for j in range(x.shape[1]):
+        for j in prange(x.shape[1]):
             x_val = x[i,j]
             if x_val>=0:
                 output[i,j] = 1. / ( 1. + np.exp(-x_val) )
