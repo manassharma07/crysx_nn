@@ -523,8 +523,8 @@ def forward_feed_cupy(x, nLayers, weights, biases, activationFunc):
     z = [None] * nLayers
     a[0] = x
     for l in range(1,nLayers+1):
-        z[l-1] = cp.einsum('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
-#         z[l-1] = contract('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
+        # z[l-1] = cp.einsum('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
+        z[l-1] = contract('ij,kj->ik',a[l-1],weights[l-1],backend='cupy')+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
         actFunc_layer = act_func_dict_cupy[activationFunc[l-1]] #Activation function for this layer
         a[l] = actFunc_layer(z[l-1])
         
@@ -545,7 +545,7 @@ def back_propagation_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
 
     sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
     if sigmaPrime[nLayers-1] =='Softmax':
-        delta[nLayers] = softmaxTimesVector_cupy(sigmaPrime_layer(z[nLayers-1]).astype(np.float32),dc_daL.astype(np.float32))
+        delta[nLayers] = softmaxTimesVector_cupy(sigmaPrime_layer(z[nLayers-1]).astype(cp.float32),dc_daL.astype(cp.float32))
     else:
         delta[nLayers] = sigmaPrime_layer(z[nLayers-1])*dc_daL
 
@@ -579,11 +579,86 @@ def back_propagation_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
 def softmaxTimesVector_cupy(a,b):
     # Reference: https://stackoverflow.com/questions/59289754/numpy-multiply-3d-array-with-2d-array
     ## Both the following methods are equally fast and give correct results
-    output = cp.einsum('ijk,ik->ij',a,b)
+    # output = cp.einsum('ijk,ik->ij',a,b)
+    output = contract('ijk,ik->ij',a,b, backend='cupy')
     # output = (a @ b[..., cp.newaxis])[..., 0]
     return output
 
-def nn_optimize_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss, gradErrorFunc=loss.MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
+def back_propagation_fast_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, biases, eeta, dc_daL, opt_einsum_expr):
+    '''
+    z: list of input vectors (different sizes) at each layer
+    a: list of output vectors after the application of act func (different sizes) at each layer
+    sigmaPrime: the function that gives the derivative of the activation function
+    dc_daL: a vector that gives the derivative of the Cost function wrt to the output
+             vector coming out of the output layer
+    '''
+    nSamples = a[0].shape[0]
+    delta = [None] * (nLayers+1)
+    derWeights = [None] * nLayers
+    derBiases = [None] * nLayers
+    
+    sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
+    if sigmaPrime[nLayers-1] =='Softmax':
+        delta[nLayers] = softmaxTimesVector_cupy(sigmaPrime_layer(z[nLayers-1]).astype(cp.float32),dc_daL.astype(cp.float32))
+#         delta[nLayers] = softmaxTimesVector(sigmaPrime_layer(z[nLayers-1]),dc_daL)
+    else:
+        delta[nLayers] = sigmaPrime_layer(z[nLayers-1])*dc_daL
+    
+    newWeights = weights[:]#.copy()
+    newBiases = biases[:]#.copy()
+    
+    derWeights[nLayers-1] = opt_einsum_expr[0](delta[nLayers],a[nLayers-1], backend='cupy')
+#     derWeights[nLayers-1] = contract('ji,jk->ik',delta[nLayers],a[nLayers-1])
+    newWeights[nLayers-1] = weights[nLayers-1] - eeta*derWeights[nLayers-1]
+    derBiases[nLayers-1] = cp.sum(delta[nLayers],axis=0)
+    newBiases[nLayers-1] = biases[nLayers-1] - eeta*derBiases[nLayers-1]
+    ioptexpr=1
+    for l in range(nLayers-1,0,-1):
+        temp = contract('ik,lk->li',weights[l].T, delta[l+1], backend='cupy')
+        # temp = np.array([np.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
+        # temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
+#         temp = tempEval(weights[l],delta[l+1],nSamples)
+#         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
+        sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
+        if sigmaPrime[l-1] =='Softmax':
+            delta[l] = softmaxTimesVector_cupy(sigmaPrime_layer(z[l-1]).astype(cp.float32),temp)
+#             delta[l] = softmaxTimesVector(sigmaPrime_layer(z[l-1]),temp)
+        else:    
+            delta[l] = sigmaPrime_layer(z[l-1])*temp
+            
+        derWeights[l-1] = opt_einsum_expr[ioptexpr](delta[l],a[l-1], backend='cupy')
+        ioptexpr=ioptexpr+1
+#         derWeights[l-1] = contract('ji,jk->ik',delta[l],a[l-1])
+        derBiases[l-1] = cp.asarray(cp.sum(delta[l],axis=0))
+        newWeights[l-1] = weights[l-1] - eeta*derWeights[l-1] 
+        newBiases[l-1] = biases[l-1] - eeta*derBiases[l-1]
+    
+    return derWeights, derBiases, newWeights, newBiases
+
+def generateExpressions_cupy(nLayers, nSamples, z, a, dc_daL, sigmaPrime, weights):
+    delta = [None] * (nLayers+1)
+    opt_einsum_expr = []
+    
+    sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
+    if sigmaPrime[nLayers-1] =='Softmax':
+        delta[nLayers] = softmaxTimesVector(sigmaPrime_layer(z[nLayers-1]).astype(cp.float32),dc_daL.astype(cp.float32))
+    else:
+        delta[nLayers] = sigmaPrime_layer(z[nLayers-1])*dc_daL
+        
+    opt_einsum_expr.append(contract_expression('ji,jk->ik',delta[nLayers].shape,a[nLayers-1].shape))
+    for l in range(nLayers-1,0,-1):
+        temp = cp.array([cp.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
+        
+        sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
+        if sigmaPrime[l-1] =='Softmax':
+            delta[l] = softmaxTimesVector(sigmaPrime_layer(z[l-1]).astype(cp.float32),temp)
+        else:    
+            delta[l] = sigmaPrime_layer(z[l-1])*temp
+        
+        opt_einsum_expr.append(contract_expression('ji,jk->ik',delta[l].shape,a[l-1].shape))
+    return opt_einsum_expr
+
+def nn_optimize_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss_cupy, gradErrorFunc=loss.MSE_loss_grad_cupy,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
     '''
     Performs the optimization of neural network weights and biases using Stochastic gradient descent.
     Parameters:
@@ -668,4 +743,83 @@ def nn_optimize_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
             print('Average Error with initial weights and biases:', errorEpoch/nBatches)
     
     
+    return weights, biases, errors
+
+def nn_optimize_fast_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss_cupy, gradErrorFunc=loss.MSE_loss_grad_cupy,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
+    '''
+    Performs the optimization of neural network weights and biases using Stochastic gradient descent.
+    Parameters:
+        nEpochs: no. of epochs (positive integer)
+        batchSize: no. of samples in the batch (integer)
+        eeta: learning rate (float)
+        inputs: batch of inputs (2D numpy ndarray of shape (N,k) where N: no. of samples, and k: no. of input nodes)
+        outputs: batch of outputs (2D numpy ndarray of shape (N,k) where N: no. of samples, and k: no. of output nodes)
+        weights: python list of weights; 
+            the size of the list is equal to the number of layers (excluding the input layer)
+            the weights are numpy 2D ndarrays of size (k,n) where k: is the number of nodes in the current layer 
+            and n: is the number of nodes in the preceeding layer ;
+            weights (matrix) of the ith layer are accessed as weights[i]
+        biases: python list of biases; 
+            the size of the list is equal to the number of layers (excluding the input layer)
+            the biases are numpy 2D ndarrays of size (k,1) where k: is the number of nodes in the current layer 
+            and n: is the number of nodes in the preceeding layer ;
+            biases (matrix) of the ith layer are accessed as biases[i]
+        activationFunc: a list of the names of suppoted activation functions;
+            the size of the list is equal to the number of layers (excluding the input layer)
+        nLayers: no. of layers in the network excluding the input layer (positive integer)
+        errorFunc: the loss function to be used (python function)
+        gradErrorFunc: the function that returns the gradient/jacobian of the loss function (python function)
+        miniterEpoch: this parameter governs the rate at which the progress bar corresponding to the epochs is updated;
+            default value is 1, i.e., the progress bar is updated every epoch.
+        miniterBatch: this parameter governs the rate at which the progress bar corresponding to the sample batches is updated;
+            default value is 100, i.e., the progress bar is updated every 100 batches.
+    Returns:
+        weights: the list of optimized weights; the size of the list is equal to the number of layers (excluding the input layer)
+        biases: the list of optimized biases the size of the list is equal to the number of layers (excluding the input layer)
+    '''
+    if batchSize==None:
+        batchSize = min(32, inputs.shape[0])
+    if weights == None:
+        weights = []
+    if biases == None:
+        biases = []
+    errors=[]
+    nBatches = int(inputs.shape[0]/batchSize)
+    for iEpoch in tqdm(range(nEpochs),leave=True,miniters=miniterEpoch):
+        errorEpoch = 0.0
+        # for iBatch in range(nBatches):
+        for iBatch in tqdm(range(nBatches),leave=False,miniters=miniterBatch,disable=not(batchProgressBar)):
+            offset = iBatch*batchSize
+            x = inputs[offset:offset + batchSize,:]# Input vector
+          
+            outExpected = outputs[offset:offset + batchSize,:] # Expected output
+            # Perform Forward feed and get the outputs at each layers and the inputs at each layer
+            a, z = forward_feed_cupy(x, nLayers, weights, biases, activationFunc)
+          
+        
+            # Error
+            errorBatch = errorFunc(a[nLayers],outExpected)
+            # Average it over the samples in the batch
+            errorEpoch += errorBatch/batchSize
+            # Get the derivative of the output cost function wrt to the output vector of the output layer
+            # The input arguments should always be an array
+            dc_daL = gradErrorFunc(a[nLayers], outExpected)
+            # Average it out
+            dc_daL = dc_daL/batchSize
+            if iEpoch==0 and iBatch==0:
+                opt_expr = generateExpressions_cupy(nLayers, batchSize, z, a, dc_daL, activationFunc, weights)
+   
+            # Perform Back Propagation and get the derivatives wrt the weights and biases
+            derWeights, derBiases, weights, biases = back_propagation_fast_cupy(z, a, activationFunc, nLayers, batchSize, weights, biases, eeta, dc_daL,opt_expr)
+
+
+
+        # Average over the batches
+        errors.append(errorEpoch/nBatches)
+        
+        if(iEpoch==0):
+            print('Average Error with initial weights and biases:', errorEpoch/nBatches)
+    
+
+        
     return weights, biases, errors
