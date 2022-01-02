@@ -1,4 +1,4 @@
-### List of available activation functions and their gradients `activation.py`
+## List of available activation functions and their gradients `activation.py`
 
 * **Sigmoid** 
 ```python
@@ -55,7 +55,7 @@ output = activation.Softmax(inputs)
 jacobian_wrt_inputs = activation.Softmax_grad(inputs) 
 ```
 
-### List of available loss functions and their gradients `loss.py`
+## List of available loss functions and their gradients `loss.py`
 
 * **Mean Absolute Error (MSE_loss)**
 ```python
