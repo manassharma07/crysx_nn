@@ -6,6 +6,14 @@ feedback@bragitoff.com
 https://www.bragitoff.com
 '''
 
+'''DEVELOPER NOTES:
+1. Whenever adding a new activation function, use Numba for CPU version and cupy for CUDA version.
+2. After adding a function here, also update the lists in utils.py
+3. Don't forget to add the gradient of activation functions as well with the suffix '_grad'.
+4. Use the suffix '_cupy' for CUDA versions of activation functions.
+5. Use the suffix '_grad_cupy' for CUDA versions of gradient of activation functions.
+'''
+
 ### ------- USEFUL REFERENCES -------------###
 # https://www.analyticsvidhya.com/blog/2021/04/activation-functions-and-their-derivatives-a-quick-complete-guide/
 # https://dustinstansbury.github.io/theclevermachine/derivation-common-neural-network-activation-functions

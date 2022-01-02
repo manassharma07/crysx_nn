@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 from operator import add
 import crysx_nn.loss as loss
 import crysx_nn.activation as activation
+import crysx_nn.utils as utils
 
 try:
     import cupy as cp                     
@@ -209,7 +210,7 @@ def forward_feed(x, nLayers, weights, biases, activationFunc):
     for l in range(1,nLayers+1):
         # z[l-1] = np.einsum('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
         z[l-1] = contract('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
-        actFunc_layer = act_func_dict[activationFunc[l-1]] #Activation function for this layer
+        actFunc_layer = utils.act_func_dict[activationFunc[l-1]] #Activation function for this layer
         a[l] = actFunc_layer(z[l-1])
         
     return a, z
@@ -261,7 +262,7 @@ def back_propagation(z, a, sigmaPrime, nLayers, nSamples, weights, biases, eeta,
     derWeights = [None] * nLayers
     derBiases = [None] * nLayers
 
-    sigmaPrime_layer = act_func_grad_dict[sigmaPrime[nLayers-1]] # Act func gradient for this layer
+    sigmaPrime_layer = utils.act_func_grad_dict[sigmaPrime[nLayers-1]] # Act func gradient for this layer
     if sigmaPrime[nLayers-1] =='Softmax':
         delta[nLayers] = softmaxTimesVector(sigmaPrime_layer(z[nLayers-1]).astype(np.float32),dc_daL.astype(np.float32))
     else:
@@ -285,7 +286,7 @@ def back_propagation(z, a, sigmaPrime, nLayers, nSamples, weights, biases, eeta,
         # print(temp.shape)
 #         temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
 #         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
-        sigmaPrime_layer = act_func_grad_dict[sigmaPrime[l-1]] # Act func gradient for this layer
+        sigmaPrime_layer = utils.act_func_grad_dict[sigmaPrime[l-1]] # Act func gradient for this layer
         if sigmaPrime[l-1] =='Softmax':
             delta[l] = softmaxTimesVector(sigmaPrime_layer(z[l-1]).astype(np.float32),temp)
         else:    
@@ -313,7 +314,7 @@ def back_propagation_fast(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
     derWeights = [None] * nLayers
     derBiases = [None] * nLayers
     
-    sigmaPrime_layer = act_func_grad_dict[sigmaPrime[nLayers-1]] # Act func gradient for this layer
+    sigmaPrime_layer = utils.act_func_grad_dict[sigmaPrime[nLayers-1]] # Act func gradient for this layer
     if sigmaPrime[nLayers-1] =='Softmax':
         delta[nLayers] = softmaxTimesVector(sigmaPrime_layer(z[nLayers-1]).astype(np.float32),dc_daL.astype(np.float32))
 #         delta[nLayers] = softmaxTimesVector(sigmaPrime_layer(z[nLayers-1]),dc_daL)
@@ -335,7 +336,7 @@ def back_propagation_fast(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
         # temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
 #         temp = tempEval(weights[l],delta[l+1],nSamples)
 #         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
-        sigmaPrime_layer = act_func_grad_dict[sigmaPrime[l-1]] # Act func gradient for this layer
+        sigmaPrime_layer = utils.act_func_grad_dict[sigmaPrime[l-1]] # Act func gradient for this layer
         if sigmaPrime[l-1] =='Softmax':
             delta[l] = softmaxTimesVector(sigmaPrime_layer(z[l-1]).astype(np.float32),temp)
 #             delta[l] = softmaxTimesVector(sigmaPrime_layer(z[l-1]),temp)
@@ -355,7 +356,7 @@ def generateExpressions(nLayers, nSamples, z, a, dc_daL, sigmaPrime, weights):
     delta = [None] * (nLayers+1)
     opt_einsum_expr = []
     
-    sigmaPrime_layer = act_func_grad_dict[sigmaPrime[nLayers-1]] # Act func gradient for this layer
+    sigmaPrime_layer = utils.act_func_grad_dict[sigmaPrime[nLayers-1]] # Act func gradient for this layer
     if sigmaPrime[nLayers-1] =='Softmax':
         delta[nLayers] = softmaxTimesVector(sigmaPrime_layer(z[nLayers-1]).astype(np.float32),dc_daL.astype(np.float32))
     else:
@@ -365,7 +366,7 @@ def generateExpressions(nLayers, nSamples, z, a, dc_daL, sigmaPrime, weights):
     for l in range(nLayers-1,0,-1):
         temp = np.array([np.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
         
-        sigmaPrime_layer = act_func_grad_dict[sigmaPrime[l-1]] # Act func gradient for this layer
+        sigmaPrime_layer = utils.act_func_grad_dict[sigmaPrime[l-1]] # Act func gradient for this layer
         if sigmaPrime[l-1] =='Softmax':
             delta[l] = softmaxTimesVector(sigmaPrime_layer(z[l-1]).astype(np.float32),temp)
         else:    
@@ -543,12 +544,12 @@ def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
     return weights, biases, errors
 
 
-act_func_dict = {'Sigmoid':activation.Sigmoid,'ReLU':activation.ReLU,'Softmax':activation.Softmax}
-act_func_grad_dict = {'Sigmoid':activation.Sigmoid_grad,'ReLU':activation.ReLU_grad,'Softmax':activation.Softmax_grad}
+# act_func_dict = {'Sigmoid':activation.Sigmoid,'ReLU':activation.ReLU,'Softmax':activation.Softmax}
+# act_func_grad_dict = {'Sigmoid':activation.Sigmoid_grad,'ReLU':activation.ReLU_grad,'Softmax':activation.Softmax_grad}
 
 ##------------------CUPY----------------------
-act_func_dict_cupy = {'Sigmoid':activation.Sigmoid_cupy,'ReLU':activation.ReLU_cupy,'Softmax':activation.Softmax_cupy}
-act_func_grad_dict_cupy = {'Sigmoid':activation.Sigmoid_grad_cupy,'ReLU':activation.ReLU_grad_cupy,'Softmax':activation.Softmax_grad_cupy}
+# act_func_dict_cupy = {'Sigmoid':activation.Sigmoid_cupy,'ReLU':activation.ReLU_cupy,'Softmax':activation.Softmax_cupy}
+# act_func_grad_dict_cupy = {'Sigmoid':activation.Sigmoid_grad_cupy,'ReLU':activation.ReLU_grad_cupy,'Softmax':activation.Softmax_grad_cupy}
 
 
 def forward_feed_cupy(x, nLayers, weights, biases, activationFunc):
@@ -584,7 +585,7 @@ def forward_feed_cupy(x, nLayers, weights, biases, activationFunc):
     for l in range(1,nLayers+1):
         # z[l-1] = cp.einsum('ij,kj->ik',a[l-1],weights[l-1])+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
         z[l-1] = contract('ij,kj->ik',a[l-1],weights[l-1],backend='cupy')+biases[l-1] #np.dot(a[l-1],weights[l-1])#np.asarray(biases[l-1] + np.dot(a[l-1],weights[l-1])) #np.einsum('jk,k->j',weights[l-1],a[l-1])s #weights[l-1]*a[l-1]
-        actFunc_layer = act_func_dict_cupy[activationFunc[l-1]] #Activation function for this layer
+        actFunc_layer = utils.act_func_dict_cupy[activationFunc[l-1]] #Activation function for this layer
         a[l] = actFunc_layer(z[l-1])
         
     return a, z
@@ -602,7 +603,7 @@ def back_propagation_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
     derWeights = [None] * nLayers
     derBiases = [None] * nLayers
 
-    sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
+    sigmaPrime_layer = utils.act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
     if sigmaPrime[nLayers-1] =='Softmax':
         delta[nLayers] = softmaxTimesVector_cupy(sigmaPrime_layer(z[nLayers-1]).astype(cp.float32),dc_daL.astype(cp.float32))
     else:
@@ -622,7 +623,7 @@ def back_propagation_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, biases, 
         # temp = cp.array([cp.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
 #         temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
 #         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
-        sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
+        sigmaPrime_layer = utils.act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
         if sigmaPrime[l-1] =='Softmax':
             delta[l] = softmaxTimesVector_cupy(sigmaPrime_layer(z[l-1]).astype(cp.float32),temp)
         else:    
@@ -656,7 +657,7 @@ def back_propagation_fast_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, bia
     derWeights = [None] * nLayers
     derBiases = [None] * nLayers
     
-    sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
+    sigmaPrime_layer = utils.act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
     if sigmaPrime[nLayers-1] =='Softmax':
         delta[nLayers] = softmaxTimesVector_cupy(sigmaPrime_layer(z[nLayers-1]).astype(cp.float32),dc_daL.astype(cp.float32))
 #         delta[nLayers] = softmaxTimesVector(sigmaPrime_layer(z[nLayers-1]),dc_daL)
@@ -678,7 +679,7 @@ def back_propagation_fast_cupy(z, a, sigmaPrime, nLayers, nSamples, weights, bia
         # temp = tempEval(np.float32(weights[l]),np.float32(delta[l+1]),nSamples)
 #         temp = tempEval(weights[l],delta[l+1],nSamples)
 #         temp = np.dot(weights[l].T, list(delta[l+1].T)).T # Slower
-        sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
+        sigmaPrime_layer = utils.act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
         if sigmaPrime[l-1] =='Softmax':
             delta[l] = softmaxTimesVector_cupy(sigmaPrime_layer(z[l-1]).astype(cp.float32),temp)
 #             delta[l] = softmaxTimesVector(sigmaPrime_layer(z[l-1]),temp)
@@ -698,7 +699,7 @@ def generateExpressions_cupy(nLayers, nSamples, z, a, dc_daL, sigmaPrime, weight
     delta = [None] * (nLayers+1)
     opt_einsum_expr = []
     
-    sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
+    sigmaPrime_layer = utils.act_func_grad_dict_cupy[sigmaPrime[nLayers-1]] # Act func gradient for this layer
     if sigmaPrime[nLayers-1] =='Softmax':
         delta[nLayers] = softmaxTimesVector(sigmaPrime_layer(z[nLayers-1]).astype(cp.float32),dc_daL.astype(cp.float32))
     else:
@@ -708,7 +709,7 @@ def generateExpressions_cupy(nLayers, nSamples, z, a, dc_daL, sigmaPrime, weight
     for l in range(nLayers-1,0,-1):
         temp = cp.array([cp.dot(weights[l].T, delta[l+1][i,:]).T for i in range(nSamples)])
         
-        sigmaPrime_layer = act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
+        sigmaPrime_layer = utils.act_func_grad_dict_cupy[sigmaPrime[l-1]] # Act func gradient for this layer
         if sigmaPrime[l-1] =='Softmax':
             delta[l] = softmaxTimesVector(sigmaPrime_layer(z[l-1]).astype(cp.float32),temp)
         else:    

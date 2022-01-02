@@ -166,7 +166,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-The most important thing for using this library properly is to use 2D NumPy arrays for defining the inputs and exoected outputs (targets) for a network. 1D arrays for inputs and targets are not supported and will result in an error.
+The most important thing for using this library properly is to use 2D NumPy arrays for defining the inputs and expected outputs (targets) for a network. 1D arrays for inputs and targets are not supported and will result in an error.
 
 For example, let us try to simulate the logic gate AND. The AND gate takes two input bits and returns a single input bit.
 The bits can take a value of either 0 or 1. The AND gate returns 1 only if both the inputs are 1, otherwise it returns 0.
@@ -336,11 +336,10 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Weights and biases initialization
 - [ ] More activation functions
-    - [ ] Identity, LeakyReLU, Tanh, etc.
+    - [ ] LeakyReLU, Swish, Mish, etc.
 - [ ] More loss functions
-    - [ ] categorical cross entropy, and others
+    - [ ] Hinge loss, and others
 - [ ] Optimization algorithms apart from Stochastic Gradient Descent, like ADAM, RMSprop, etc.
 - [ ] Implement regularizers
 - [ ] Batch normalization
