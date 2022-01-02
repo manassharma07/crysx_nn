@@ -1,6 +1,6 @@
 ### List of available activation functions and their gradients `activation.py`
 
-* Sigmoid 
+* **Sigmoid** 
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -10,7 +10,7 @@ output = activation.Sigmoid(inputs)
 gradient_wrt_inputs = activation.Sigmoid_grad(inputs)
 
 ```
-* Tanh
+* **Tanh**
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -19,7 +19,7 @@ inputs = np.random.randn((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Sigmoid(inputs)
 gradient_wrt_inputs = activation.Tanh_grad(inputs)
 ```
-* Tanh_offset
+* **Tanh_offset**
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -28,7 +28,7 @@ inputs = np.random.randn((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Tanh_offset(inputs)
 gradient_wrt_inputs = activation.Tanh_offset_grad(inputs)
 ```
-* ReLU
+* **ReLU**
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -37,7 +37,7 @@ inputs = np.random.randn((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.ReLU(inputs)
 gradient_wrt_inputs = activation.ReLU_grad(inputs)
 ```
-* Softplus
+* **Softplus**
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -46,7 +46,7 @@ inputs = np.random.randn((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Softplus(inputs)
 gradient_wrt_inputs = activation.Softplus_grad(inputs)
 ```
-* Softmax
+* **Softmax**
 ```python
 import crysx_nn.activation as activation
 import numpy as np
