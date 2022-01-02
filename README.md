@@ -23,7 +23,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-[![Documentation][documentation-shield]][documentation-url]
+[![Documentation][docs-shield]][documentation-url]
 
 <!-- PROJECT LOGO -->
 <br />
