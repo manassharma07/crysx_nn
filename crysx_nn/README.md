@@ -1,9 +1,11 @@
+<div id="top"></div>
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Features</summary>
   <ol>
     <li>
-      <a href="#List-of-available-activation-functions-and-their-gradients-`activation.py`">Activation Functions (CPU)</a>
+      <a href="#Activation-Functions">Activation Functions (CPU)</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
       </ul>
@@ -19,7 +21,8 @@
   </ol>
 </details>
 
-## List of available activation functions and their gradients `activation.py`
+## Activation Functions
+* List of available activation functions and their gradients `activation.py`*
 
 * **Sigmoid** 
 ```python
@@ -75,6 +78,7 @@ inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Softmax(inputs)
 jacobian_wrt_inputs = activation.Softmax_grad(inputs) 
 ```
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## List of available loss functions and their gradients `loss.py`
 
@@ -109,3 +113,5 @@ error = MSE_loss(predictions, targets)
 gradient_wrt_predictions = loss.MSE_loss_grad(predictions, targets)
 ```
 * **Categorical Cross Entropy (CCE_loss)**
+
+<p align="right">(<a href="#top">back to top</a>)</p>
