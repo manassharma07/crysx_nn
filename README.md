@@ -23,6 +23,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
+[![Documentation][documentation-shield]][documentation-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -438,3 +439,4 @@ or:
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/manassharma07
 [product-screenshot]: https://www.bragitoff.com/wp-content/uploads/2021/12/logo_crysx_nn.png
+[documentation-url]: https://github.com/manassharma07/crysx_nn/blob/main/Documentation.md
