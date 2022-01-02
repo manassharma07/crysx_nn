@@ -2,7 +2,7 @@
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Features</summary>
+  <summary># Features</summary>
   <ol>
     <li>
       <a href="#Activation-Functions">Activation Functions (CPU)</a>
