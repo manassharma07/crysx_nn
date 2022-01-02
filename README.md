@@ -440,3 +440,4 @@ or:
 [linkedin-url]: https://www.linkedin.com/in/manassharma07
 [product-screenshot]: https://www.bragitoff.com/wp-content/uploads/2021/12/logo_crysx_nn.png
 [documentation-url]: https://github.com/manassharma07/crysx_nn/blob/main/Documentation.md
+[documentation-shield]: https://img.shields.io/badge/-docs-blue.svg?style=for-the-badge&logo=linkedin&colorB=389
