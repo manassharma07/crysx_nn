@@ -27,10 +27,69 @@ except ImportError:
 
 
 
-def initParams(nInputs, neurons_per_layer, activation_func_names):
+def initParams(nInputs, neurons_per_layer, method='random2'):
+    # References: 
+    # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/
+    # https://towardsdatascience.com/weight-initialization-in-neural-networks-a-journey-from-the-basics-to-kaiming-954fb9b47c79
+    # A very good read, for implementing future methods: https://adityassrana.github.io/blog/theory/2020/08/26/Weight-Init.html
+    # TODO Fixup init https://paperswithcode.com/method/fixup-initialization
     nLayers = len(neurons_per_layer)
-    weights = []
-    biases = []
+    weights = [None] * (nLayers)
+    biases = [None] * (nLayers)
+    for i in range(nLayers):
+        if method=='random1':
+            # Initialize weights with random numbers [0.0,1.0]
+            if i==0:
+                weights[i] = np.random.uniform(low=0.0, high=1.0, size=(neurons_per_layer[i], nInputs))
+            else:
+                weights[i] = np.random.uniform(low=0.0, high=1.0, size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+
+        if method=='random2':
+            # Initialize weights with random numbers [-0.3,0.3]
+            if i==0:
+                weights[i] = np.random.uniform(low=-0.3, high=0.3, size=(neurons_per_layer[i], nInputs))
+            else:
+                weights[i] = np.random.uniform(low=-0.3, high=0.3, size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+        
+        if method=='random3':
+            # Initialize weights with random numbers [-1.0,1.0]
+            if i==0:
+                weights[i] = np.random.uniform(low=-1.0, high=1.0, size=(neurons_per_layer[i], nInputs))
+            else:
+                weights[i] = np.random.uniform(low=-1.0, high=1.0, size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+        
+        if method=='Xavier':
+            # Reference: https://paperswithcode.com/method/xavier-initialization
+            # Initialize weights with random numbers [-1/sqrt(N),1/sqrt(N)] where N is the number of nodes
+            if i==0:
+                sqrtN = np.sqrt(nInputs)
+                weights[i] = np.random.uniform(low=-1./sqrtN, high=1./sqrtN, size=(neurons_per_layer[i], nInputs))
+            else:
+                sqrtN = np.sqrt(neurons_per_layer[i-1])
+                weights[i] = np.random.uniform(low=-1./sqrtN, high=1./sqrtN, size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+
+        if method=='NormXavier':
+            # Reference: https://paperswithcode.com/method/xavier-initialization
+            # Initialize weights with random numbers [-1/sqrt(N),1/sqrt(N)] where N is the number of nodes
+            if i==0:
+                sqrtN = np.sqrt(nInputs)
+                sqrtM = np.sqrt(neurons_per_layer[i])
+                weights[i] = np.random.uniform(low=-6./(sqrtN+sqrtM), high=6./(sqrtN+sqrtM), size=(neurons_per_layer[i], nInputs))
+            else:
+                sqrtN = np.sqrt(neurons_per_layer[i-1])
+                sqrtM = np.sqrt(neurons_per_layer[i])
+                weights[i] = np.random.uniform(low=-6./(sqrtN+sqrtM), high=6./(sqrtN+sqrtM), size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+
+        if method=='He':
+            # Reference: https://paperswithcode.com/method/xavier-initialization
+            # Initialize weights with random numbers [-1/sqrt(N),1/sqrt(N)] where N is the number of nodes
+            if i==0:
+                weights[i] = np.random.normal(loc=0.0, scale=np.sqrt(2./nInputs), size=(neurons_per_layer[i], nInputs))
+            else:
+                weights[i] = np.random.normal(loc=0.0, scale=np.sqrt(2./neurons_per_layer[i-1]), size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+        
+        # Initialize biases
+        biases[i] = np.zeros(neurons_per_layer[i])
 
     return weights, biases
 
