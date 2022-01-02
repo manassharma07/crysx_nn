@@ -1,6 +1,12 @@
 ### List of available activation functions and their gradients
 
-* Sigmoid
+* Sigmoid 
+```python
+import crysx_nn.activation as activation
+import numpy as np
+inputs = np.random.randn((5,4))
+output = activation.Sigmoid(inputs)
+```
 * Tanh
 * Tanh_offset
 * ReLU
