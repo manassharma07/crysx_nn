@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: crysx-nn
-Version: 0.1.5
+Version: 0.1.6
 Summary: A simplistic and efficient pure-python neural network library from Phys Whiz.
 Home-page: https://github.com/manassharma07/crysx_nn
 Author: Manas Sharma
 Author-email: feedback@bragitoff.com
 License: MIT
-Download-URL: https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.5.tar.gz
+Download-URL: https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.6.tar.gz
 Keywords: neural network,pure python,crysx,numba nn,machine learning,ML,deep learning,deepL,MLP,perceptron,phys whiz,manas sharma,bragitoff,crysx
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
@@ -155,7 +155,7 @@ You need to have `python3` installed along with `pip`.
 
 There are many ways to install `crysx_nn`
 
-1. Install the release (stable) version from [PyPi](https://example.com)
+1. Install the release (stable) version from [PyPi](https://pypi.org/project/crysx-nn/)
     ```sh
     pip install crysx_nn
     ```
@@ -198,7 +198,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-The most important thing for using this library properly is to use 2D NumPy arrays for defining the inputs and exoected outputs (targets) for a network. 1D arrays for inputs and targets are not supported and will result in an error.
+The most important thing for using this library properly is to use 2D NumPy arrays for defining the inputs and expected outputs (targets) for a network. 1D arrays for inputs and targets are not supported and will result in an error.
 
 For example, let us try to simulate the logic gate AND. The AND gate takes two input bits and returns a single input bit.
 The bits can take a value of either 0 or 1. The AND gate returns 1 only if both the inputs are 1, otherwise it returns 0.
@@ -214,6 +214,7 @@ x1 | x2 | output
 
 The four possible set of inputs are 
 ```python
+import numpy as np
 inputs = np.array([[0.,0.,1.,1.],[0.,1.,0.,1.]]).T.astype('float32')
 print(inputs)
 print(inputs.dtype) 
@@ -253,13 +254,14 @@ batchSize = 4 # No. of input samples to process at a time for optimization
 ```
 For a better understanding, let us visualize it. 
 ```python
+from crysx_nn.network import visualize
 visualize(nInputs, neurons_per_layer, activation_func_names)
 ```
 Output:
 ![](https://www.bragitoff.com/wp-content/uploads/2021/12/Screenshot-2021-12-25-at-17.31.01.png)
 
-Now let us initialize the weights and biases. Weights and biases are provided as lists of 2D and 1D NumPy arrays, respectively (1 Numpy array for each layer). In our case, we have 2 layers (1 hidden+ 1 output), therefore, the list of Weights and Biases will have 2 NumPy arrays each.
-```python
+ Now let us initialize the weights and biases. Weights and biases are provided as lists of 2D and 1D NumPy arrays, respectively (1 Numpy array for each layer). In our case, we have 2 layers (1 hidden+ 1 output), therefore, the list of Weights and Biases will have 2 NumPy arrays each.
+<!--```python
 # Initial guesses for weights
 w1 = 0.30
 w2 = 0.55
@@ -278,9 +280,9 @@ b2 = 0.05
 # need to use a list instead of a numpy array, since the 
 #weight matrices at each layer are not of the same dimensions
 weights = [] 
-# Weights for layer 1 --> 2
+# Weights for layer 1 -> 2
 weights.append(np.array([[w1,w4],[w2, w5], [w3, w6]]))
-# Weights for layer 2 --> 3
+# Weights for layer 2 -> 3
 weights.append(np.array([[w7, w8, w9]]))
 # List of biases at each layer
 biases = []
@@ -292,16 +294,29 @@ biasesOriginal = biases
 
 print('Weights matrices: ',weights)
 print('Biases: ',biases)
+``` -->
+
+```python
+from crysx_nn.network import init_params
+weightsOriginal, biasesOriginal = init_params(nInputs, neurons_per_layer, method='Xavier')
+print('Weights matrices: \n', weightsOriginal)
+print('Biases: \n', biasesOriginal)
 ```
 Output:
 ``` 
-Weights matrices:  [array([[0.3 , 0.45],
-       [0.55, 0.5 ],
-       [0.2 , 0.35]]), array([[0.15, 0.4 , 0.25]])]
-Biases:  [array([0.6, 0.6, 0.6]), array([0.05])]
+Weights matrices: 
+ [array([[-0.61979737,  0.07541748],
+       [ 0.1316069 , -0.67034901],
+       [ 0.18497999, -0.25721774]]), array([[-0.00756673,  0.1604136 ,  0.52756856]])]
+Biases: 
+ [array([0., 0., 0.]), array([0.])]
 ```
 Finally it is time to train our neural network. We will use mean squared error (MSE) loss function as the metric of performance. Currently, only stochastic gradient descent is supported.
 ```python
+# Import loss function and its gradient
+from crysx_nn.loss import MSE_loss, MSE_loss_grad
+# Import optimization function
+from crysx_nn.network import nn_optimize_fast
 # Run optimization
 optWeights, optBiases, errorPlot = nn_optimize_fast(inputs, outputAND, activation_func_names, nLayers, nEpochs=nEpochs, batchSize=batchSize, eeta=eeta, weights=weightsOriginal, biases=biasesOriginal, errorFunc=MSE_loss, gradErrorFunc=MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100)
 ```
@@ -309,6 +324,7 @@ The function `nn_optimize_fast` returns the optimized weights and biases, as wel
 
 We can then plot the training loss at each epoch
 ```python
+import matplotlib.pyplot as plt
 # Plot the error vs epochs
 plt.plot(errorPlot)
 plt.yscale('log')
@@ -331,9 +347,15 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
     - [x] Sigmoid, Sigmoid_grad
     - [x] ReLU, ReLU_grad
     - [x] Softmax, Softmax_grad  
-- [x] Efficient implementations of loss functions
+    - [x] Softplus, Sofplus_grad  
+    - [x] Tanh, Tanh_grad 
+    - [x] Tanh_offset, Tanh_offset_grad  
+    - [x] Identity, Identity_grad 
+- [x] Efficient implementations of loss functions and their gradients
     - [x] Mean squared error
+    - [x] Mean absolute error
     - [x] Binary cross entropy  
+    - [x] Categorical cross entropy  
 - [x] Neural network optimization using 
     - [x] Stochastic Gradient Descent
 - [x] Support for batched inputs, i.e., supplying a matrix of inputs where the collumns correspond to features and rows to the samples
@@ -346,11 +368,10 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Weights and biases initialization
 - [ ] More activation functions
-    - [ ] Identity, LeakyReLU, Tanh, etc.
+    - [ ] LeakyReLU, Swish, Mish, etc.
 - [ ] More loss functions
-    - [ ] categorical cross entropy, and others
+    - [ ] Hinge loss, and others
 - [ ] Optimization algorithms apart from Stochastic Gradient Descent, like ADAM, RMSprop, etc.
 - [ ] Implement regularizers
 - [ ] Batch normalization

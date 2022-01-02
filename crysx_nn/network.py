@@ -1,7 +1,7 @@
 import numpy as np
 # print(np.__version__)
-from autograd import numpy as anp
-from autograd import grad, elementwise_grad, jacobian
+# from autograd import numpy as anp
+# from autograd import grad, elementwise_grad, jacobian
 # if hasattr(__builtins__,'__IPYTHON__'):
 #     from tqdm.notebook import tqdm
 #     print('Using notebook tqdm')
@@ -114,51 +114,9 @@ def visualize(nInputs, neurons_per_layer, activation_func_names):
     plt.show()
     
 
-@njit(cache=True,fastmath=True)
-def cross_entropy(predictions, targets, epsilon=1e-12):
-    """
-    Computes cross entropy between targets (encoded as one-hot vectors)
-    and predictions. 
-    Input: predictions (N, k) ndarray
-          targets (N, k) ndarray        
-    Returns: scalar
-    """
-    predictions = np.clip(predictions, epsilon, 1. - epsilon)
-#    N = predictions.shape[0]
-    ce = -np.sum(targets*np.log(predictions+1e-9))/predictions.shape[1]#/N
-    return ce
 
 
 
-@njit(cache=True,fastmath=True)
-def cross_entropy_grad(predictions, targets):
-    """
-    Computes cross entropy gradient between targets (encoded as one-hot vectors)
-    and predictions. 
-    Input: predictions (N, k) ndarray
-          targets (N, k) ndarray        
-    Returns: matrix
-    """
-    # https://math.stackexchange.com/questions/2503428/derivative-of-binary-cross-entropy-why-are-my-signs-not-right
-    return -np.divide(targets,predictions)
-
-def cross_entropy2(predictions, targets, epsilon=1e-12):
-    """
-    Computes cross entropy between targets (encoded as one-hot vectors)
-    and predictions. 
-    Input: predictions (N, k) ndarray
-          targets (N, k) ndarray        
-    Returns: scalar
-    """
-    predictions = anp.clip(predictions, epsilon, 1. - epsilon)
-#    N = predictions.shape[0]
-    ce = -anp.sum(targets*anp.log(predictions+1e-9))#/N
-    return ce
-
-cross_entropy_grad2 = grad(cross_entropy2,0)
-
-def cross_ent_d(y, yhat):
-    return yhat - y
 
 
 
