@@ -27,11 +27,13 @@
     <li>
       <a href="#Loss-Functions">Loss Functions (CPU)</a>
       <ul>
-        <li><a href="#Mean Absolute Error (MSE_loss)">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#Mean-Absolute-Error-(MAE_loss)">Mean Absolute Error (CPU)</a></li>
+        <li><a href="#Mean-Squared-Error-(MSE_loss)">Mean Squared Error (CPU)</a></li>
+        <li><a href="#Binary-Cross-Entropy-(BCE_loss)">Binary Cross Entropy (CPU)</a></li>
+        <li><a href="#Categorical-Cross-Entropy-(CCE_loss)">Categorical Cross Entropy (CPU)</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#Neural-Network-Functions">Neural Network Functions</a></li>
   </ol>
 </details>
 
@@ -128,5 +130,18 @@ error = MSE_loss(predictions, targets)
 gradient_wrt_predictions = loss.MSE_loss_grad(predictions, targets)
 ```
 #### Categorical Cross Entropy (CCE_loss)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Neural Network Functions 
+**List of available neural network functions and their gradients `network.py`**
+
+#### Visualize
+
+#### Optimize
+
+#### Forward Feed
+
+#### Backpropagation
 
 <p align="right">(<a href="#top">back to top</a>)</p>
