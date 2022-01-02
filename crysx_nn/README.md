@@ -7,13 +7,27 @@
     <li>
       <a href="#Activation-Functions">Activation Functions (CPU)</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#Sigmoid">Sigmoid</a></li>
       </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#Tanh">Tanh</a></li>
+      </ul>
+      <ul>
+        <li><a href="#Tanh_offset">Tanh_offset</a></li>
+      </ul>
+      <ul>
+        <li><a href="#ReLU">ReLU</a></li>
+      </ul>
+      <ul>
+        <li><a href="#Softplus">Softplus</a></li>
+      </ul>
+      <ul>
+        <li><a href="#Softmax">Softmax</a></li>
+      </ul>
+    <li>
+      <a href="#Loss-Functions">Loss Functions (CPU)</a>
+      <ul>
+        <li><a href="#Mean Absolute Error (MSE_loss)">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -22,9 +36,9 @@
 </details>
 
 ## Activation Functions
-* List of available activation functions and their gradients `activation.py`*
+**List of available activation functions and their gradients `activation.py`**
 
-* **Sigmoid** 
+#### Sigmoid 
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -33,7 +47,7 @@ inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Sigmoid(inputs)
 gradient_wrt_inputs = activation.Sigmoid_grad(inputs)
 ```
-* **Tanh**
+#### Tanh
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -42,7 +56,7 @@ inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Sigmoid(inputs)
 gradient_wrt_inputs = activation.Tanh_grad(inputs)
 ```
-* **Tanh_offset**
+#### Tanh_offset
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -51,7 +65,7 @@ inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Tanh_offset(inputs)
 gradient_wrt_inputs = activation.Tanh_offset_grad(inputs)
 ```
-* **ReLU**
+#### ReLU
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -60,7 +74,7 @@ inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.ReLU(inputs)
 gradient_wrt_inputs = activation.ReLU_grad(inputs)
 ```
-* **Softplus**
+#### Softplus
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -69,7 +83,7 @@ inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Softplus(inputs)
 gradient_wrt_inputs = activation.Softplus_grad(inputs)
 ```
-* **Softmax**
+#### Softmax
 ```python
 import crysx_nn.activation as activation
 import numpy as np
@@ -80,9 +94,10 @@ jacobian_wrt_inputs = activation.Softmax_grad(inputs)
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## List of available loss functions and their gradients `loss.py`
+## Loss Functions 
+**List of available loss functions and their gradients `loss.py`**
 
-* **Mean Absolute Error (MSE_loss)**
+#### Mean Absolute Error (MSE_loss)
 ```python
 from crysx_nn.loss import MAE_loss, MAE_loss_grad
 import numpy as np
@@ -92,7 +107,7 @@ targets = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 error = MAE_loss(predictions, targets)
 gradient_wrt_predictions = MAE_loss_grad(predictions, targets)
 ```
-* **Mean Squared Error (MSE_loss)**
+#### Mean Squared Error (MSE_loss)
 ```python
 from crysx_nn.loss import MSE_loss, MSE_loss_grad
 import numpy as np
@@ -102,7 +117,7 @@ targets = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 error = MSE_loss(predictions, targets)
 gradient_wrt_predictions = loss.MSE_loss_grad(predictions, targets)
 ```
-* **Binary Cross Entropy (BCE_loss)**
+#### Binary Cross Entropy (BCE_loss)
 ```python
 from crysx_nn.loss import MSE_loss, MSE_loss_grad
 import numpy as np
@@ -112,6 +127,6 @@ targets = np.random.randn((5,4)) # BatchSize=nSamples=5; nodes=4
 error = MSE_loss(predictions, targets)
 gradient_wrt_predictions = loss.MSE_loss_grad(predictions, targets)
 ```
-* **Categorical Cross Entropy (CCE_loss)**
+#### Categorical Cross Entropy (CCE_loss)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
