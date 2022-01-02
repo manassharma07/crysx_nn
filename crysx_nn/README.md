@@ -2,10 +2,10 @@
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary># Features</summary>
+  <summary> Features</summary>
   <ol>
     <li>
-      <a href="#Activation-Functions">Activation Functions (CPU)</a>
+      <a href="#Activation-Functions-(CPU)">Activation Functions (CPU)</a>
       <ul>
         <li><a href="#Sigmoid">Sigmoid</a></li>
       </ul>
@@ -25,7 +25,7 @@
         <li><a href="#Softmax">Softmax</a></li>
       </ul>
     <li>
-      <a href="#Loss-Functions">Loss Functions (CPU)</a>
+      <a href="#Loss-Functions-(CPU)">Loss Functions (CPU)</a>
       <ul>
         <li><a href="#Mean-Absolute-Error-(MAE_loss)">Mean Absolute Error (CPU)</a></li>
         <li><a href="#Mean-Squared-Error-(MSE_loss)">Mean Squared Error (CPU)</a></li>
@@ -33,11 +33,11 @@
         <li><a href="#Categorical-Cross-Entropy-(CCE_loss)">Categorical Cross Entropy (CPU)</a></li>
       </ul>
     </li>
-    <li><a href="#Neural-Network-Functions">Neural Network Functions</a></li>
+    <li><a href="#Neural-Network-Functions-(CPU)">Neural Network Functions (CPU)</a></li>
   </ol>
 </details>
 
-## Activation Functions
+## Activation Functions (CPU)
 **List of available activation functions and their gradients `activation.py`**
 
 #### Sigmoid 
@@ -96,7 +96,7 @@ jacobian_wrt_inputs = activation.Softmax_grad(inputs)
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Loss Functions 
+## Loss Functions (CPU)
 **List of available loss functions and their gradients `loss.py`**
 
 #### Mean Absolute Error (MSE_loss)
@@ -133,7 +133,7 @@ gradient_wrt_predictions = loss.MSE_loss_grad(predictions, targets)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Neural Network Functions 
+## Neural Network Functions (CPU)
 **List of available neural network functions and their gradients `network.py`**
 
 #### Visualize
