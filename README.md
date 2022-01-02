@@ -265,8 +265,8 @@ print('Biases: ',biases)
 ``` -->
 
 ```python
-from crysx_nn.network import initParams
-weightsOriginal, biasesOriginal = initParams(nInputs, neurons_per_layer, method='Xavier')
+from crysx_nn.network import init_params
+weightsOriginal, biasesOriginal = init_params(nInputs, neurons_per_layer, method='Xavier')
 print('Weights matrices: \n', weightsOriginal)
 print('Biases: \n', biasesOriginal)
 ```

@@ -28,7 +28,7 @@ except ImportError:
 
 
 
-def initParams(nInputs, neurons_per_layer, method='random2'):
+def init_params(nInputs, neurons_per_layer, method='random2'):
     # References: 
     # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/
     # https://towardsdatascience.com/weight-initialization-in-neural-networks-a-journey-from-the-basics-to-kaiming-954fb9b47c79
