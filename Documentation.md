@@ -48,6 +48,8 @@ import numpy as np
 inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Sigmoid(inputs)
 gradient_wrt_inputs = activation.Sigmoid_grad(inputs)
+print('Output\n',output)
+print('Gradient\n',gradient_wrt_inputs)
 ```
 #### Tanh
 ```python
@@ -57,6 +59,8 @@ import numpy as np
 inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Tanh(inputs)
 gradient_wrt_inputs = activation.Tanh_grad(inputs)
+print('Output\n',output)
+print('Gradient\n',gradient_wrt_inputs)
 ```
 #### Tanh_offset
 ```python
@@ -66,6 +70,19 @@ import numpy as np
 inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Tanh_offset(inputs)
 gradient_wrt_inputs = activation.Tanh_offset_grad(inputs)
+print('Output\n',output)
+print('Gradient\n',gradient_wrt_inputs)
+```
+#### Identity
+```python
+import crysx_nn.activation as activation
+import numpy as np
+# inputs should be a 2d array where the rows correspond to the samples and the columns correspond to the nodes.
+inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
+output = activation.Identity(inputs)
+gradient_wrt_inputs = activation.Identity_grad(inputs)
+print('Output\n',output)
+print('Gradient\n',gradient_wrt_inputs)
 ```
 #### ReLU
 ```python
@@ -84,6 +101,8 @@ import numpy as np
 inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Softplus(inputs)
 gradient_wrt_inputs = activation.Softplus_grad(inputs)
+print('Output\n',output)
+print('Gradient\n',gradient_wrt_inputs)
 ```
 #### Softmax
 ```python
@@ -93,6 +112,8 @@ import numpy as np
 inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 output = activation.Softmax(inputs)
 jacobian_wrt_inputs = activation.Softmax_grad(inputs) 
+print('Output\n',output)
+print('Gradient\n',jacobian_wrt_inputs)
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 

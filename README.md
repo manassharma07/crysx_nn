@@ -217,19 +217,46 @@ nInputs = 2 # No. of nodes in the input layer
 neurons_per_layer = [3,1] # Neurons per layer (excluding the input layer)
 activation_func_names = ['Sigmoid', 'Sigmoid']
 nLayers = len(neurons_per_layer)
-eeta = 0.5 # Learning rate
+eta = 0.5 # Learning rate
 nEpochs=10**4 # For stochastic gradient descent
 batchSize = 4 # No. of input samples to process at a time for optimization
 ```
-For a better understanding, let us visualize it. 
+Let us now create the neural network model using the above parameters
 ```python
-from crysx_nn.network import visualize
-visualize(nInputs, neurons_per_layer, activation_func_names)
+from crysx_nn import network
+model = network.nn_model(nInputs=nInputs, neurons_per_layer=neurons_per_layer, activation_func_names=activation_func_names, batch_size=batchSize, device='CPU', init_method='Xavier') 
+```
+Note: ```device='CPU'``` indidcates that the we are going to be running the computations on the CPU. If you have cupy installed and a compatible GP then you could also use ```device='GPU'```. However, in that case the inputs and ouputs should also be cupy arrays instead of numpy arrays.
+To check if the model was initialized correctly, you can check the model details as
+```python
+model.details()
+```
+Output:
+```
+----------------------------------------------------------------------------------
+****Neural Network Model Details****
+----------------------------------------------------------------------------------
+Number of input nodes:  2
+Number of layers (hidden+output):  2
+Number of nodes in each layer (hidden & output):  [3, 1]
+Activation function for each layer (hidden & output):   ['Sigmoid', 'Sigmoid']
+Method used for weights and biases initialization:   Xavier
+Batch Size:  4
+Device:  CPU
+Optimization method:  SGD
+Learning rate:  0.5
+----------------------------------------------------------------------------------
+```
+For a better understanding of our network, let us visualize it. 
+```python
+model.visualize()
 ```
 Output:
 ![](https://www.bragitoff.com/wp-content/uploads/2021/12/Screenshot-2021-12-25-at-17.31.01.png)
 
- Now let us initialize the weights and biases. Weights and biases are provided as lists of 2D and 1D NumPy arrays, respectively (1 Numpy array for each layer). In our case, we have 2 layers (1 hidden+ 1 output), therefore, the list of Weights and Biases will have 2 NumPy arrays each.
+Weights and biases are already initialized when you create the model using the ```'Xavier'``` method. 
+Weights and biases are lists of 2D and 1D NumPy arrays, respectively (1 Numpy array for each layer). In our case, we have 2 layers (1 hidden+ 1 output), therefore, the list of Weights and Biases will have 2 NumPy arrays each.
+You can also initialize them again using some other method as follows:
 <!--```python
 # Initial guesses for weights
 w1 = 0.30
@@ -266,41 +293,66 @@ print('Biases: ',biases)
 ``` -->
 
 ```python
-from crysx_nn.network import init_params
-weightsOriginal, biasesOriginal = init_params(nInputs, neurons_per_layer, method='Xavier')
-print('Weights matrices: \n', weightsOriginal)
-print('Biases: \n', biasesOriginal)
+model.init_params(method='NormXavier')
+print('Initial Weights:\n',model.init_weights)
+print('Initial Biases:\n',model.init_biases)
 ```
 Output:
 ``` 
-Weights matrices: 
- [array([[-0.61979737,  0.07541748],
-       [ 0.1316069 , -0.67034901],
-       [ 0.18497999, -0.25721774]]), array([[-0.00756673,  0.1604136 ,  0.52756856]])]
-Biases: 
+Initial Weights:
+ [array([[-0.66735507,  1.89981375],
+       [ 1.58135381,  0.30297808],
+       [-1.02875636,  0.39637066]]), array([[ 1.14150595,  0.86579216, -1.50878406]])]
+Initial Biases:
  [array([0., 0., 0.]), array([0.])]
 ```
 Finally it is time to train our neural network. We will use mean squared error (MSE) loss function as the metric of performance. Currently, only stochastic gradient descent is supported.
 ```python
-# Import loss function and its gradient
-from crysx_nn.loss import MSE_loss, MSE_loss_grad
-# Import optimization function
-from crysx_nn.network import nn_optimize_fast
 # Run optimization
-optWeights, optBiases, errorPlot = nn_optimize_fast(inputs, outputAND, activation_func_names, nLayers, nEpochs=nEpochs, batchSize=batchSize, eeta=eeta, weights=weightsOriginal, biases=biasesOriginal, errorFunc=MSE_loss, gradErrorFunc=MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100)
+model.optimize(inputs, outputAND, lr=0.5,nEpochs=nEpochs,loss_func_name='MSE', miniterEpoch=1, batchProgressBar=False, miniterBatch=100)
 ```
-The function `nn_optimize_fast` returns the optimized weights and biases, as well as the error at each epoch of the optimization.
+The optimization saves the optimized weights and biases as well as the error at each epoch in the attributes of the `nn_model` object.
 
 We can then plot the training loss at each epoch
 ```python
 import matplotlib.pyplot as plt
 # Plot the error vs epochs
-plt.plot(errorPlot)
+plt.plot(model.errors)
 plt.yscale('log')
 plt.show()
 ```
 Output:
 ![](https://www.bragitoff.com/wp-content/uploads/2021/12/Screenshot-2021-12-25-at-18.56.01.png)
+
+Finally, you can make predictions using the optimized network using the following code
+```python
+predictions, error = model.predict(inputs, outputAND, loss_func_name='MSE')
+print('Input:\n',inputs)
+print('Prediction:\n',predictions)
+print('Expected Output:\n',outputAND)
+print('New Average Error with optimized weights:\n', error)
+```
+OUTPUT:
+```
+Input:
+ [[0. 0.]
+ [0. 1.]
+ [1. 0.]
+ [1. 1.]]
+Prediction:
+ [[6.51744058e-05]
+ [8.16272136e-03]
+ [5.94678339e-03]
+ [9.90297134e-01]]
+Expected Output:
+ [[0.]
+ [0.]
+ [0.]
+ [1.]]
+New Average Error with optimized weights:
+ 4.903602650103742e-05
+```
+
 _For more examples, please refer to the [Examples Section](https://github.com/manassharma07/crysx_nn/tree/main/examples)_
 
 CrysX-NN (crysx_nn) also provides CUDA support by using cupy versions of all the features ike activation functions, loss functions, neural network calculations, etc.
@@ -330,6 +382,7 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
 - [x] Support for batched inputs, i.e., supplying a matrix of inputs where the collumns correspond to features and rows to the samples
 - [x] Support for GPU through Cupy `pip install cupy-cuda102` (Tested with CUDA 10.2)
 - [x] JIT compiled functions when possible for efficiency
+- [x] Object oriented
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -346,7 +399,6 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
 - [ ] Batch normalization and layer normalization
 - [ ] Dropout
 - [ ] Early stopping
-- [ ] A `predict` function that returns the output of the last layer and the loss/accuracy
 - [ ] Some metric functions, although there is no harm in using `sklearn` for that 
 
 See the [open issues](https://github.com/manassharma07/crysx_nn/issues) for a full list of proposed features (and known issues).

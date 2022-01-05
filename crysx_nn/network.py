@@ -908,7 +908,7 @@ def nn_optimize_fast_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, 
         
     return weights, biases, errors
 
-class model:
+class nn_model:
     def __init__(self, nInputs=None, neurons_per_layer=None, activation_func_names=None, batch_size=None, device='CPU', init_method='Xavier'): 
         if nInputs is None:
             print('ERROR: You need to specify the number of input nodes.')
@@ -927,24 +927,97 @@ class model:
             self.activation_func_names = activation_func_names
         print('Note: The model will use the following device for all the computations: ', device)
         
+        self.batch_size = batch_size
+        self.device = device
         self.init_method = init_method
-        if device=='CPU':
+        if self.device=='CPU':
             self.init_weights, self.init_biases = init_params(self.nInputs, self.neurons_per_layer, method=self.init_method)
-        if device=='GPU':
+        if self.device=='GPU':
             self.init_weights, self.init_biases = init_params_cupy(self.nInputs, self.neurons_per_layer, method=self.init_method)
         self.nLayers = len(neurons_per_layer)
-        self.weights = []
-        self.biases = []
+        self.weights = self.init_weights
+        self.biases = self.init_biases
         self.errors = []
+        self.opt_method = 'SGD'
+        self.lr = 0.5
 
-        def optimize(self, inputs, outputs, method='SGD', lr=0.5, nEpochs=100,loss_func=None, loss_func_grad=None,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
-            if self.device=='CPU':
-                if loss_func is None:
-                    loss_func = loss.MSE_loss
-                    loss_func_grad = loss.MSE_loss_grad
-                self.weights, self.biases, self.errors = nn_optimize_fast(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.init_weights, biases=self.init_biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
-            if self.device=='GPU':
-                if loss_func is None:
-                    loss_func = loss.MSE_loss_cupy
-                    loss_func_grad = loss.MSE_loss_grad_cupy
-                self.weights, self.biases, self.errors = nn_optimize_fast_cupy(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.init_weights, biases=self.init_biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
+    def init_params(self, method=None):
+        if method is None:
+            method = self.init_method
+        if self.device=='CPU':
+            self.init_weights, self.init_biases = init_params(self.nInputs, self.neurons_per_layer, method=method)
+        if self.device=='GPU':
+            self.init_weights, self.init_biases = init_params_cupy(self.nInputs, self.neurons_per_layer, method=method)
+        self.weights = self.init_weights
+        self.biases = self.init_biases
+
+
+    def visualize(self):
+        visualize(self.nInputs, self.neurons_per_layer, self.activation_func_names)
+        
+    def details(self):
+        print('----------------------------------------------------------------------------------')
+        print('****Neural Network Model Details****')
+        print('----------------------------------------------------------------------------------')
+        print('Number of input nodes: ', self.nInputs)
+        print('Number of layers (hidden+output): ', self.nLayers)
+        print('Number of nodes in each layer (hidden & output): ', self.neurons_per_layer)
+        print('Activation function for each layer (hidden & output):  ', self.activation_func_names)
+        print('Method used for weights and biases initialization:  ', self.init_method)
+        print('Batch Size: ', self.batch_size)
+        print('Device: ', self.device)
+        print('Optimization method: ', self.opt_method)
+        print('Learning rate: ', self.lr)
+        print('----------------------------------------------------------------------------------')
+        
+    def optimize(self, inputs, outputs, method=None, lr=None, nEpochs=100,loss_func_name=None, miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
+        if method is None:
+            method = self.opt_method
+        if lr is None:
+            lr = self.lr
+        if self.device=='CPU':
+            if loss_func_name is None:
+                loss_func = loss.MSE_loss
+                loss_func_grad = loss.MSE_loss_grad
+            else:
+                loss_func = utils.loss_func_dict[loss_func_name]
+                loss_func_grad = utils.loss_func_grad_dict[loss_func_name]
+            self.weights, self.biases, self.errors = nn_optimize_fast(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
+        if self.device=='GPU':
+            if loss_func_name is None:
+                loss_func = loss.MSE_loss_cupy
+                loss_func_grad = loss.MSE_loss_grad_cupy
+            else:
+                loss_func = utils.loss_func_dict_cupy[loss_func_name]
+                loss_func_grad = utils.loss_func_grad_dict_cupy[loss_func_name]
+            self.weights, self.biases, self.errors = nn_optimize_fast_cupy(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
+    
+    def predict(self, inputs, outputs, loss_func_name=None):
+        if self.device=='CPU':
+            if loss_func_name is None:
+                loss_func = loss.MSE_loss
+                loss_func_grad = loss.MSE_loss_grad
+            else:
+                loss_func = utils.loss_func_dict[loss_func_name]
+                loss_func_grad = utils.loss_func_grad_dict[loss_func_name]
+            # Forward feed with optimized weights
+            # Perform Forward feed and get the outputs at each layers and the inputs at each layer
+            a, z = forward_feed(inputs, self.nLayers, self.weights, self.biases, self.activation_func_names)
+            new_outputs = a[self.nLayers] 
+            # New Error
+            error = loss_func(new_outputs, outputs)/self.batch_size
+        if self.device=='GPU':
+            if loss_func_name is None:
+                loss_func = loss.MSE_loss_cupy
+                loss_func_grad = loss.MSE_loss_grad_cupy
+            else:
+                loss_func = utils.loss_func_dict_cupy[loss_func_name]
+                loss_func_grad = utils.loss_func_grad_dict_cupy[loss_func_name]
+            # Forward feed with optimized weights
+            # Perform Forward feed and get the outputs at each layers and the inputs at each layer
+            a, z = forward_feed_cupy(inputs, self.nLayers, self.weights, self.biases, self.activation_func_names)
+            new_outputs = a[self.nLayers] 
+            # New Error
+            error = loss_func(new_outputs, outputs)/self.batch_size
+
+        return new_outputs, error

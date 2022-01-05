@@ -36,8 +36,10 @@ def Softmax(x):
     '''
     Performs the Softmax activation on a given set of inputs
     Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+
     Parameters:
     x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns:
     Softmax activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
@@ -49,9 +51,11 @@ def Softmax(x):
 def Softmax_grad(x): # Best implementation (VERY FAST)
     '''
     Returns the jacobian of the Softmax function wrt the given set of inputs.
+    
     Parameters:
     x: should be a 2d array where the rows correspond to the samples
         and the columns correspond to the nodes. [(N,k) ndarray (N: no. of samples, k: no. of nodes)]
+    
     Returns: 
     jacobian of the Softmax activated values wrt to the input parameter x
     '''
@@ -75,8 +79,10 @@ def Sigmoid(x): # Also known as logistic/soft step or even expit in scipy.specia
     '''
     Performs the Sigmoid activation on a given set of inputs
     Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    
     Parameters:
     x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns:
     Sigmoid activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
@@ -115,8 +121,10 @@ def Sigmoid(x): # Also known as logistic/soft step or even expit in scipy.specia
 def Sigmoid_grad(x):
     '''
     Returns the gradient (derivative) of the Sigmoid function wrt the given set of inputs.
+    
     Parameters:
     x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns: 
     gradient of the Sigmoid activated values wrt to the input parameter x
     '''
@@ -128,8 +136,10 @@ def ReLU(x):
     '''
     Performs the ReLU (Rectified Linear Unit) activation on a given set of inputs
     Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    
     Parameters:
     x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns:
     ReLU activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
@@ -143,8 +153,10 @@ def ReLU(x):
 def ReLU_grad(x):
     '''
     Returns the gradient (derivative) of the ReLU function wrt the given set of inputs.
+    
     Parameters:
     x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns: 
     gradient of the ReLU activated values wrt to the input parameter x
     '''
@@ -155,8 +167,10 @@ def Tanh_offset(x):
     '''
     Performs the Tanh_offset activation on a given set of inputs
     Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    
     Parameters:
     x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns:
     Tanh_offset activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
@@ -166,8 +180,10 @@ def Tanh_offset(x):
 def Tanh_offset_grad(x):
     '''
     Returns the gradient (derivative) of the Tanh_offset function wrt the given set of inputs.
+    
     Parameters:
     x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns: 
     gradient of the Tanh_offset activated values wrt to the input parameter x
     '''
@@ -178,8 +194,10 @@ def Tanh(x):
     '''
     Performs the Tanh activation on a given set of inputs
     Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    
     Parameters:
     x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns:
     Tanh activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
@@ -189,8 +207,10 @@ def Tanh(x):
 def Tanh_grad(x):
     '''
     Returns the gradient (derivative) of the Tanh function wrt the given set of inputs.
+    
     Parameters:
     x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns: 
     gradient of the Tanh activated values wrt to the input parameter x
     '''
@@ -200,8 +220,10 @@ def Tanh_grad(x):
 def Identity(x):
     '''
     Performs the Identity activation on a given set of inputs
+    
     Parameters:
     x:  input ndarray
+    
     Returns:
     Identity activated ndarray 
     '''
@@ -211,8 +233,10 @@ def Identity(x):
 def Identity_grad(x):
     '''
     Returns the gradient (derivative) of the Identity function wrt the given set of inputs.
+    
     Parameters:
     x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns: 
     gradient of the Idnentity activated values wrt to the input parameter x
     '''
@@ -222,8 +246,10 @@ def Identity_grad(x):
 def Softplus(x): 
     '''
     Performs the Softplus activation on a given set of inputs
+    
     Parameters:
     x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns:
     Softplus activated ndarray 
     '''
@@ -235,8 +261,10 @@ def Softplus(x):
 def Softplus_grad(x): # This is simply the sigmoid function
     '''
     Returns the gradient (derivative) of the Softplus function wrt the given set of inputs.
+    
     Parameters:
     x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns: 
     gradient of the Softplus activated values wrt to the input parameter x
     '''
@@ -252,8 +280,10 @@ def Softmax_cupy(x):
     '''
     Performs the Softmax activation on a given set of inputs
     Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    
     Parameters:
     x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    
     Returns:
     Softmax activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
@@ -262,12 +292,7 @@ def Softmax_cupy(x):
     return e_x / e_x.sum(axis=1).reshape((-1, 1)) # Alternative of keepdims=True for Numba compatibility
 
 def Softmax_grad_cupy(x): # Best implementation (VERY FAST)
-    '''Returns the jacobian of the Softmax function for the given set of inputs.
-    Inputs:
-    x: should be a 2d array where the rows correspond to the samples
-        and the columns correspond to the nodes.
-    Returns: jacobian
-    '''
+    
     s = Softmax_cupy(x)
     a = cp.eye(s.shape[-1])
     temp1 = cp.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=cp.float32)
