@@ -38,7 +38,7 @@
 </details>
 
 ## Activation Functions (CPU)
-**List of available activation functions and their gradients `activation.py`**
+**List of available activation functions and their gradients in `activation.py`, as well as how to use them.**
 
 #### Sigmoid 
 ```python
@@ -55,7 +55,7 @@ import crysx_nn.activation as activation
 import numpy as np
 # inputs should be a 2d array where the rows correspond to the samples and the columns correspond to the nodes.
 inputs = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
-output = activation.Sigmoid(inputs)
+output = activation.Tanh(inputs)
 gradient_wrt_inputs = activation.Tanh_grad(inputs)
 ```
 #### Tanh_offset
@@ -103,7 +103,7 @@ jacobian_wrt_inputs = activation.Softmax_grad(inputs)
 ```python
 from crysx_nn.loss import MAE_loss, MAE_loss_grad
 import numpy as np
-# predictions/targets should be a 2d array where the rows correspond to the samples and the columns correspond to the output nodes.
+# predictions and targets should be 2d arrays where the rows correspond to the samples and the columns correspond to the output nodes.
 predictions = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 targets = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 error = MAE_loss(predictions, targets)
@@ -113,7 +113,7 @@ gradient_wrt_predictions = MAE_loss_grad(predictions, targets)
 ```python
 from crysx_nn.loss import MSE_loss, MSE_loss_grad
 import numpy as np
-# predictions/targets should be a 2d array where the rows correspond to the samples and the columns correspond to the output nodes.
+# predictions and targets should be 2d arrays where the rows correspond to the samples and the columns correspond to the output nodes.
 predictions = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 targets = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 error = MSE_loss(predictions, targets)
@@ -123,18 +123,18 @@ gradient_wrt_predictions = loss.MSE_loss_grad(predictions, targets)
 ```python
 from crysx_nn.loss import MSE_loss, MSE_loss_grad
 import numpy as np
-# predictions/targets should be a 2d array where the rows correspond to the samples and the columns correspond to the output nodes.
+# predictions and targets should be 2d arrays where the rows correspond to the samples and the columns correspond to the output nodes.
 predictions = np.random.random((5,4)) # BatchSize=nSamples=5; nodes=4
 targets = np.random.randn((5,4)) # BatchSize=nSamples=5; nodes=4
-error = MSE_loss(predictions, targets)
-gradient_wrt_predictions = loss.MSE_loss_grad(predictions, targets)
+error = BCE_loss(predictions, targets)
+gradient_wrt_predictions = loss.BCE_loss_grad(predictions, targets)
 ```
 #### Categorical Cross Entropy (CCE_loss)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Neural Network Functions (CPU)
-**List of available neural network functions and their gradients `network.py`**
+**List of available neural network functions and their gradients `network.py`, as well as how to use them.**
 
 #### Visualize
 

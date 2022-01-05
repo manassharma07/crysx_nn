@@ -37,7 +37,7 @@
   <p align="center">
     A simplistic and efficient pure-python neural network library from Phys Whiz with CPU and GPU support.
     <br />
-    <a href="https://github.com/manassharma07/crysx_nn"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/manassharma07/crysx_nn/blob/main/Documentation.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/manassharma07/crysx_nn/blob/main/examples/Simulating_Logic_Gates.ipynb">View Demo</a>
@@ -343,7 +343,7 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
     - [ ] Hinge loss, and others
 - [ ] Optimization algorithms apart from Stochastic Gradient Descent, like ADAM, RMSprop, etc.
 - [ ] Implement regularizers
-- [ ] Batch normalization
+- [ ] Batch normalization and layer normalization
 - [ ] Dropout
 - [ ] Early stopping
 - [ ] A `predict` function that returns the output of the last layer and the loss/accuracy

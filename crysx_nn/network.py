@@ -370,7 +370,7 @@ def nn_optimize(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=
     if batchSize==None:
         batchSize = min(32, inputs.shape[0])
     if weights == None:
-        weights = []
+        weights =[]#, dummy = init_params()
     if biases == None:
         biases = []
     errors=[]
@@ -508,6 +508,72 @@ def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
 ##------------------CUPY----------------------
 # act_func_dict_cupy = {'Sigmoid':activation.Sigmoid_cupy,'ReLU':activation.ReLU_cupy,'Softmax':activation.Softmax_cupy}
 # act_func_grad_dict_cupy = {'Sigmoid':activation.Sigmoid_grad_cupy,'ReLU':activation.ReLU_grad_cupy,'Softmax':activation.Softmax_grad_cupy}
+
+def init_params_cupy(nInputs, neurons_per_layer, method='random2'):
+    # References: 
+    # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/
+    # https://towardsdatascience.com/weight-initialization-in-neural-networks-a-journey-from-the-basics-to-kaiming-954fb9b47c79
+    # A very good read, for implementing future methods: https://adityassrana.github.io/blog/theory/2020/08/26/Weight-Init.html
+    # TODO Fixup init https://paperswithcode.com/method/fixup-initialization
+    nLayers = len(neurons_per_layer)
+    weights = [None] * (nLayers)
+    biases = [None] * (nLayers)
+    for i in range(nLayers):
+        if method=='random1':
+            # Initialize weights with random numbers [0.0,1.0]
+            if i==0:
+                weights[i] = cp.random.uniform(low=0.0, high=1.0, size=(neurons_per_layer[i], nInputs))
+            else:
+                weights[i] = cp.random.uniform(low=0.0, high=1.0, size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+
+        if method=='random2':
+            # Initialize weights with random numbers [-0.3,0.3]
+            if i==0:
+                weights[i] = cp.random.uniform(low=-0.3, high=0.3, size=(neurons_per_layer[i], nInputs))
+            else:
+                weights[i] = cp.random.uniform(low=-0.3, high=0.3, size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+        
+        if method=='random3':
+            # Initialize weights with random numbers [-1.0,1.0]
+            if i==0:
+                weights[i] = cp.random.uniform(low=-1.0, high=1.0, size=(neurons_per_layer[i], nInputs))
+            else:
+                weights[i] = cp.random.uniform(low=-1.0, high=1.0, size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+        
+        if method=='Xavier':
+            # Reference: https://paperswithcode.com/method/xavier-initialization
+            # Initialize weights with random numbers [-1/sqrt(N),1/sqrt(N)] where N is the number of nodes
+            if i==0:
+                sqrtN = cp.sqrt(nInputs)
+                weights[i] = cp.random.uniform(low=-1./sqrtN, high=1./sqrtN, size=(neurons_per_layer[i], nInputs))
+            else:
+                sqrtN = cp.sqrt(neurons_per_layer[i-1])
+                weights[i] = cp.random.uniform(low=-1./sqrtN, high=1./sqrtN, size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+
+        if method=='NormXavier':
+            # Reference: https://paperswithcode.com/method/xavier-initialization
+            # Initialize weights with random numbers [-1/sqrt(N),1/sqrt(N)] where N is the number of nodes
+            if i==0:
+                sqrtN = cp.sqrt(nInputs)
+                sqrtM = cp.sqrt(neurons_per_layer[i])
+                weights[i] = cp.random.uniform(low=-6./(sqrtN+sqrtM), high=6./(sqrtN+sqrtM), size=(neurons_per_layer[i], nInputs))
+            else:
+                sqrtN = cp.sqrt(neurons_per_layer[i-1])
+                sqrtM = cp.sqrt(neurons_per_layer[i])
+                weights[i] = cp.random.uniform(low=-6./(sqrtN+sqrtM), high=6./(sqrtN+sqrtM), size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+
+        if method=='He':
+            # Reference: https://paperswithcode.com/method/xavier-initialization
+            # Initialize weights with random numbers [-1/sqrt(N),1/sqrt(N)] where N is the number of nodes
+            if i==0:
+                weights[i] = cp.random.normal(loc=0.0, scale=cp.sqrt(2./nInputs), size=(neurons_per_layer[i], nInputs))
+            else:
+                weights[i] = cp.random.normal(loc=0.0, scale=cp.sqrt(2./neurons_per_layer[i-1]), size=(neurons_per_layer[i], neurons_per_layer[i-1]))
+        
+        # Initialize biases
+        biases[i] = cp.zeros(neurons_per_layer[i])
+
+    return weights, biases
 
 
 def forward_feed_cupy(x, nLayers, weights, biases, activationFunc):
@@ -841,3 +907,44 @@ def nn_optimize_fast_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, 
 
         
     return weights, biases, errors
+
+class model:
+    def __init__(self, nInputs=None, neurons_per_layer=None, activation_func_names=None, batch_size=None, device='CPU', init_method='Xavier'): 
+        if nInputs is None:
+            print('ERROR: You need to specify the number of input nodes.')
+            return
+        else: 
+            self.nInputs = nInputs
+        if neurons_per_layer is None:
+            print('ERROR: You need to specify the number of neurons per layer (excluding the input layer) and supply it as a list.')
+            return
+        else: 
+            self.neurons_per_layer = neurons_per_layer
+        if activation_func_names is None:
+            print('ERROR: You need to specify the activation function for each layer and supply it as a list.')
+            return
+        else: 
+            self.activation_func_names = activation_func_names
+        print('Note: The model will use the following device for all the computations: ', device)
+        
+        self.init_method = init_method
+        if device=='CPU':
+            self.init_weights, self.init_biases = init_params(self.nInputs, self.neurons_per_layer, method=self.init_method)
+        if device=='GPU':
+            self.init_weights, self.init_biases = init_params_cupy(self.nInputs, self.neurons_per_layer, method=self.init_method)
+        self.nLayers = len(neurons_per_layer)
+        self.weights = []
+        self.biases = []
+        self.errors = []
+
+        def optimize(self, inputs, outputs, method='SGD', lr=0.5, nEpochs=100,loss_func=None, loss_func_grad=None,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
+            if self.device=='CPU':
+                if loss_func is None:
+                    loss_func = loss.MSE_loss
+                    loss_func_grad = loss.MSE_loss_grad
+                self.weights, self.biases, self.errors = nn_optimize_fast(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.init_weights, biases=self.init_biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
+            if self.device=='GPU':
+                if loss_func is None:
+                    loss_func = loss.MSE_loss_cupy
+                    loss_func_grad = loss.MSE_loss_grad_cupy
+                self.weights, self.biases, self.errors = nn_optimize_fast_cupy(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.init_weights, biases=self.init_biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)

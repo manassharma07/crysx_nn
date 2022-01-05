@@ -34,11 +34,12 @@ except ImportError:
 @njit(cache=True,fastmath=True)  # Best implementation (VERY FAST)
 def Softmax(x):
     '''
-    Performs the softmax activation on a given set of inputs
-    Input: x (N,k) ndarray (N: no. of samples, k: no. of nodes)
-    Returns: 
+    Performs the Softmax activation on a given set of inputs
     Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
-
+    Parameters:
+    x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns:
+    Softmax activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
     e_x = np.exp(x - np.max(x)) # For stability as it is prone to overflow and underflow
 #     return e_x / e_x.sum(axis=1, keepdims=True) # only difference
@@ -46,11 +47,13 @@ def Softmax(x):
 
 @njit(cache=True,fastmath=True)
 def Softmax_grad(x): # Best implementation (VERY FAST)
-    '''Returns the jacobian of the Softmax function for the given set of inputs.
-    Inputs:
+    '''
+    Returns the jacobian of the Softmax function wrt the given set of inputs.
+    Parameters:
     x: should be a 2d array where the rows correspond to the samples
-        and the columns correspond to the nodes.
-    Returns: jacobian
+        and the columns correspond to the nodes. [(N,k) ndarray (N: no. of samples, k: no. of nodes)]
+    Returns: 
+    jacobian of the Softmax activated values wrt to the input parameter x
     '''
     s = Softmax(x)
     a = np.eye(s.shape[-1])
@@ -69,6 +72,14 @@ def Softmax_grad(x): # Best implementation (VERY FAST)
 
 @njit(cache=True,fastmath=True, parallel=True)
 def Sigmoid(x): # Also known as logistic/soft step or even expit in scipy.special
+    '''
+    Performs the Sigmoid activation on a given set of inputs
+    Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    Parameters:
+    x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns:
+    Sigmoid activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    '''
     # The following is susceptible to overflow/underflow issues.
     # return 1/(1+np.exp(-x))
     # The following are some stable alternatives
@@ -102,11 +113,26 @@ def Sigmoid(x): # Also known as logistic/soft step or even expit in scipy.specia
 
 @njit(cache=True,fastmath=True)
 def Sigmoid_grad(x):
+    '''
+    Returns the gradient (derivative) of the Sigmoid function wrt the given set of inputs.
+    Parameters:
+    x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns: 
+    gradient of the Sigmoid activated values wrt to the input parameter x
+    '''
     e_x = np.exp(-x)
     return e_x/(e_x+1)**2
 
 @njit(cache=True,fastmath=True)
 def ReLU(x):
+    '''
+    Performs the ReLU (Rectified Linear Unit) activation on a given set of inputs
+    Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    Parameters:
+    x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns:
+    ReLU activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    '''
     # Broadcasting seems expensive compared to TF and PyTorch
     # return np.maximum(0.,x)
     # a = np.zeros(x.shape,dtype=np.float32)
@@ -115,40 +141,105 @@ def ReLU(x):
 
 @njit(cache=True,fastmath=True)
 def ReLU_grad(x):
+    '''
+    Returns the gradient (derivative) of the ReLU function wrt the given set of inputs.
+    Parameters:
+    x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns: 
+    gradient of the ReLU activated values wrt to the input parameter x
+    '''
     return np.greater(x, 0.).astype(np.float32)
 
 @njit(cache=True,fastmath=True)
 def Tanh_offset(x):
+    '''
+    Performs the Tanh_offset activation on a given set of inputs
+    Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    Parameters:
+    x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns:
+    Tanh_offset activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    '''
     return 0.5*(1.+np.tanh(x))
 
 @njit(cache=True,fastmath=True)
 def Tanh_offset_grad(x):
+    '''
+    Returns the gradient (derivative) of the Tanh_offset function wrt the given set of inputs.
+    Parameters:
+    x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns: 
+    gradient of the Tanh_offset activated values wrt to the input parameter x
+    '''
     return 1./(np.cosh(2.*x)+1.)
 
 @njit(cache=True,fastmath=True)
 def Tanh(x):
+    '''
+    Performs the Tanh activation on a given set of inputs
+    Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    Parameters:
+    x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns:
+    Tanh activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    '''
     return np.tanh(x)
 
 @njit(cache=True,fastmath=True)
 def Tanh_grad(x):
+    '''
+    Returns the gradient (derivative) of the Tanh function wrt the given set of inputs.
+    Parameters:
+    x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns: 
+    gradient of the Tanh activated values wrt to the input parameter x
+    '''
     return 1.-np.tanh(x)**2 # sech^2{x}
 
 @njit(cache=True,fastmath=True)
 def Identity(x):
+    '''
+    Performs the Identity activation on a given set of inputs
+    Parameters:
+    x:  input ndarray
+    Returns:
+    Identity activated ndarray 
+    '''
     return x
 
 @njit(cache=True,fastmath=True)
 def Identity_grad(x):
+    '''
+    Returns the gradient (derivative) of the Identity function wrt the given set of inputs.
+    Parameters:
+    x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns: 
+    gradient of the Idnentity activated values wrt to the input parameter x
+    '''
     return np.ones(x.shape, dtype=x.dtype)
 
 @njit(cache=True,fastmath=True)
 def Softplus(x): 
+    '''
+    Performs the Softplus activation on a given set of inputs
+    Parameters:
+    x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns:
+    Softplus activated ndarray 
+    '''
     # Reference: https://stackoverflow.com/questions/44230635/avoid-overflow-with-softplus-function-in-python
     return np.log1p(np.exp(-np.abs(x))) + np.maximum(x, 0)
     # np.log(1 + np.exp(-np.abs(x))) + np.maximum(x,0)
 
 @njit(cache=True,fastmath=True)
 def Softplus_grad(x): # This is simply the sigmoid function
+    '''
+    Returns the gradient (derivative) of the Softplus function wrt the given set of inputs.
+    Parameters:
+    x: (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns: 
+    gradient of the Softplus activated values wrt to the input parameter x
+    '''
     # The following would be susceptible to over/underflow just like th Sigmoid function
     # return np.divide(1.,1.+np.exp(-x))
     # Use this instead
@@ -159,10 +250,12 @@ def Softplus_grad(x): # This is simply the sigmoid function
 ###-----------CUPY----------------
 def Softmax_cupy(x):
     '''
-    Performs the softmax activation on a given set of inputs
-    Input: x (N,k) ndarray (N: no. of samples, k: no. of nodes)
-    Returns: 
+    Performs the Softmax activation on a given set of inputs
     Note: Works for 2D arrays only(rows for samples, columns for nodes/outputs)
+    Parameters:
+    x:  (N,k) ndarray (N: no. of samples, k: no. of nodes)
+    Returns:
+    Softmax activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
     e_x = cp.exp(x - cp.max(x)) # For stability as it is prone to overflow and underflow
 #     return e_x / e_x.sum(axis=1, keepdims=True) # only difference
