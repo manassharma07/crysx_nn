@@ -167,7 +167,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-The most important thing for using this library properly is to use 2D NumPy arrays for defining the inputs and expected outputs (targets) for a network. 1D arrays for inputs and targets are not supported and will result in an error.
+The most important thing for using this library properly is to use 2D NumPy/Cupy arrays for defining the inputs and expected outputs (targets) for a network. 1D arrays for inputs and targets are not supported and will result in an error.
 
 For example, let us try to simulate the logic gate AND. The AND gate takes two input bits and returns a single input bit.
 The bits can take a value of either 0 or 1. The AND gate returns 1 only if both the inputs are 1, otherwise it returns 0.
@@ -226,7 +226,7 @@ Let us now create the neural network model using the above parameters
 from crysx_nn import network
 model = network.nn_model(nInputs=nInputs, neurons_per_layer=neurons_per_layer, activation_func_names=activation_func_names, batch_size=batchSize, device='CPU', init_method='Xavier') 
 ```
-Note: ```device='CPU'``` indidcates that the we are going to be running the computations on the CPU. If you have cupy installed and a compatible GP then you could also use ```device='GPU'```. However, in that case the inputs and ouputs should also be cupy arrays instead of numpy arrays.
+Note: ```device='CPU'``` indicates that the we are going to be running the computations on the CPU. If you have cupy installed and a compatible GPU, then you could also use ```device='GPU'```. However, in that case the inputs and ouputs should also be cupy arrays instead of numpy arrays.
 To check if the model was initialized correctly, you can check the model details as
 ```python
 model.details()
@@ -311,7 +311,7 @@ Finally it is time to train our neural network. We will use mean squared error (
 # Run optimization
 model.optimize(inputs, outputAND, lr=0.5,nEpochs=nEpochs,loss_func_name='MSE', miniterEpoch=1, batchProgressBar=False, miniterBatch=100)
 ```
-The optimization saves the optimized weights and biases as well as the error at each epoch in the attributes of the `nn_model` object.
+The optimization saves the optimized weights ```model.weights``` and biases ```model.biases``` as well as the error ```model.errors``` at each epoch in the attributes of the `nn_model` object.
 
 We can then plot the training loss at each epoch
 ```python
