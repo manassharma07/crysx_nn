@@ -373,12 +373,12 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
     - [x] Tanh_offset, Tanh_offset_grad  
     - [x] Identity, Identity_grad 
 - [x] Efficient implementations of loss functions and their gradients
-    - [x] Mean squared error
+    - [x] Mean squared error 
     - [x] Mean absolute error
     - [x] Binary cross entropy  
     - [x] Categorical cross entropy  
 - [x] Several methods for weights initialization
-    - [x] ```'random1, random2, random3'```
+    - [x] ```'random1'```, ```'random2'```, ```'random3'```
     - [x] ```'Xavier'```
     - [x] ```'NormXavier'```
     - [x] ```'He'```
