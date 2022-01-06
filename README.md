@@ -377,6 +377,11 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
     - [x] Mean absolute error
     - [x] Binary cross entropy  
     - [x] Categorical cross entropy  
+- [x] Several methods for weights initialization
+    - [x] ```'random1, random2, random3'```
+    - [x] ```'Xavier'```
+    - [x] ```'NormXavier'```
+    - [x] ```'He'```
 - [x] Neural network optimization using 
     - [x] Stochastic Gradient Descent
 - [x] Support for batched inputs, i.e., supplying a matrix of inputs where the collumns correspond to features and rows to the samples
