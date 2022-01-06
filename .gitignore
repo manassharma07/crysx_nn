@@ -5,3 +5,4 @@ benchmarks_tests/.ipynb_checkpoints/
 benchmarks_tests/MNIST/
 examples/.ipynb_checkpoints/
 dist/
+examples/EMNIST_torch/
