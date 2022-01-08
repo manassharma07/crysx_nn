@@ -384,7 +384,7 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
     - [x] ```'He'```
 - [x] Neural network optimization using 
     - [x] Stochastic Gradient Descent
-- [x] Support for batched inputs, i.e., supplying a matrix of inputs where the collumns correspond to features and rows to the samples
+- [x] Support for batched inputs, i.e., supplying a matrix of inputs where the columns correspond to features and rows to the samples
 - [x] Support for GPU through Cupy `pip install cupy-cuda102` (Tested with CUDA 10.2)
 - [x] JIT compiled functions when possible for efficiency
 - [x] Object oriented
@@ -456,7 +456,7 @@ Blog: [https://bragitoff.com](https://bragitoff.com/)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* Lecture notes by [Prof. Dr. Bernd Bürgmann](https://www.physik.uni-jena.de/en/bruegmann)
+* Lecture notes by [Prof. Dr. Bernd Brügmann](https://www.physik.uni-jena.de/en/bruegmann)
 * [Ondřej  Zelenka](https://www.researchgate.net/profile/Ondrej-Zelenka) for useful discussions.
 * [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com) by [Michael Nielsen](https://michaelnielsen.org)
 * [A high-bias, low-variance introduction to Machine Learning for physicists](https://arxiv.org/abs/1803.08823) by Mehta et al., 2019
