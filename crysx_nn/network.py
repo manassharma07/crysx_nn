@@ -1,3 +1,4 @@
+from numba.core import errors
 import numpy as np
 # print(np.__version__)
 # from autograd import numpy as anp
@@ -992,7 +993,9 @@ class nn_model:
                 loss_func_grad = utils.loss_func_grad_dict_cupy[loss_func_name]
             self.weights, self.biases, self.errors = nn_optimize_fast_cupy(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
     
-    def predict(self, inputs, outputs, loss_func_name=None):
+    def predict(self, inputs, outputs=None, loss_func_name=None):
+        error = 0.0
+        nBatches = np.maximum(int(inputs.shape[0]/self.batch_size),1)
         if self.device=='CPU':
             if loss_func_name is None:
                 loss_func = loss.MSE_loss
@@ -1000,12 +1003,18 @@ class nn_model:
             else:
                 loss_func = utils.loss_func_dict[loss_func_name]
                 loss_func_grad = utils.loss_func_grad_dict[loss_func_name]
-            # Forward feed with optimized weights
-            # Perform Forward feed and get the outputs at each layers and the inputs at each layer
-            a, z = forward_feed(inputs, self.nLayers, self.weights, self.biases, self.activation_func_names)
-            new_outputs = a[self.nLayers] 
-            # New Error
-            error = loss_func(new_outputs, outputs)/self.batch_size
+            for iBatch in range(nBatches):
+                offset = iBatch*self.batch_size
+                x = inputs[offset:offset + self.batch_size,:]# Input vector
+                
+                # Forward feed with optimized weights
+                # Perform Forward feed and get the outputs at each layers and the inputs at each layer
+                a, z = forward_feed(x, self.nLayers, self.weights, self.biases, self.activation_func_names)
+                new_outputs = a[self.nLayers] 
+                if outputs is not None:
+                    outExpected = outputs[offset:offset + self.batch_size,:] # Expected output
+                    # New Error
+                    error += loss_func(new_outputs, outExpected)/self.batch_size
         if self.device=='GPU':
             if loss_func_name is None:
                 loss_func = loss.MSE_loss_cupy
@@ -1013,11 +1022,20 @@ class nn_model:
             else:
                 loss_func = utils.loss_func_dict_cupy[loss_func_name]
                 loss_func_grad = utils.loss_func_grad_dict_cupy[loss_func_name]
-            # Forward feed with optimized weights
-            # Perform Forward feed and get the outputs at each layers and the inputs at each layer
-            a, z = forward_feed_cupy(inputs, self.nLayers, self.weights, self.biases, self.activation_func_names)
-            new_outputs = a[self.nLayers] 
-            # New Error
-            error = loss_func(new_outputs, outputs)/self.batch_size
-
-        return new_outputs, error
+            for iBatch in range(nBatches):
+                offset = iBatch*self.batch_size
+                x = inputs[offset:offset + self.batch_size,:]# Input vector
+                
+                # Forward feed with optimized weights
+                # Perform Forward feed and get the outputs at each layers and the inputs at each layer
+                a, z = forward_feed_cupy(x, self.nLayers, self.weights, self.biases, self.activation_func_names)
+                new_outputs = a[self.nLayers] 
+                if outputs is not None:
+                    outExpected = outputs[offset:offset + self.batch_size,:] # Expected output
+                    # New Error
+                    # New Error
+                    error += loss_func(new_outputs, outExpected)/self.batch_size
+        if outputs is None:
+            return new_outputs
+        else:
+            return new_outputs, error/nBatches
