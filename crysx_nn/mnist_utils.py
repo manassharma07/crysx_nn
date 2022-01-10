@@ -6,7 +6,10 @@ from urllib.request import urlopen
 from io import BytesIO
 from zipfile import ZipFile
 import cv2
-import image_slicer
+try:
+    import image_slicer                     
+except ImportError:
+    print('image_slicer could not be imported!')
 
 def downloadMNIST(url='https://github.com/manassharma07/MNIST-PLUS/archive/refs/tags/PNG.zip', extract_to='.'):
     http_response = urlopen(url)
