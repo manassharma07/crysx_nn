@@ -7,4 +7,6 @@ examples/.ipynb_checkpoints/
 dist/
 examples/EMNIST_torch/
 mnist_experiments/EMNIST_torch/
-mnist_experiments/MNIST_torch
+mnist_experiments/MNIST_torch/
+examples/EMNIST_torch/
+examples/MNIST_torch

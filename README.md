@@ -105,7 +105,8 @@ The goal was to create a framework that is efficient yet easy to understand, so 
 * [opt_einsum](https://optimized-einsum.readthedocs.io/en/stable/) (Required)
 * [matplotlib](https://matplotlib.org) (Required)
 * [nnv](https://pypi.org/project/nnv/) (Required)
-
+* [pillow](https://pillow.readthedocs.io/en/stable/index.html) (Optional)
+* [zipfile](https://docs.python.org/3/library/zipfile.html) (Optional)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

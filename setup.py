@@ -32,7 +32,10 @@ setup(
                       'nnv',
                       'matplotlib',
                       'numexpr',
-                      'tomli'                    
+                      'tomli',
+                      'zipfile',
+                      'Pillow',
+                      'opencv-python'                    
                       ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
