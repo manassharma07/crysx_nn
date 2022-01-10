@@ -33,7 +33,6 @@ setup(
                       'matplotlib',
                       'numexpr',
                       'tomli',
-                      'zipfile',
                       'Pillow',
                       'opencv-python'                    
                       ],
