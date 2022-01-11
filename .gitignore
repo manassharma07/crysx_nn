@@ -10,5 +10,6 @@ mnist_experiments/EMNIST_torch/
 mnist_experiments/MNIST_torch/
 examples/EMNIST_torch/
 examples/MNIST_torch
-examples\MNIST-PLUS-PNG
+examples/MNIST-PLUS-PNG/
 mnist_experiments\MNIST-PLUS-PNG
+build/
