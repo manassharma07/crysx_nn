@@ -140,7 +140,7 @@ if canvas_result.image_data is not None:
     st.write('2. Convert it to size 22x22.')
     st.write('3. Pad the image with 3 pixels on all the sides to get a 28x28 image.')
     st.write('4. Normalize the image to have pixel values between 0 and 1.')
-    st.write('5. Standardize the image using the mean and standard deviation of the MNIST_plus dataset.')
+    st.write('5. Standardize the image using the mean and standard deviation of the MNIST training dataset.')
 
     st.write('### Processed image')
     st.image('processed_tensor.png')
