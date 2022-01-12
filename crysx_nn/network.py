@@ -105,7 +105,7 @@ def init_params(nInputs, neurons_per_layer, method='random2',dtype='float32'):
     return weights, biases
 
 
-def visualize(nInputs, neurons_per_layer, activation_func_names):
+def visualize(nInputs, neurons_per_layer, activation_func_names, filename='neural_network_visualization.png'):
     plt.rcParams["figure.figsize"] = (14,10)
     nLayers = len(neurons_per_layer)
     # Input layer
@@ -118,8 +118,9 @@ def visualize(nInputs, neurons_per_layer, activation_func_names):
 
     # Output layers
     layersList.append({"title":"output \n("+activation_func_names[nLayers-1]+")"+"\n(n="+str(neurons_per_layer[nLayers-1])+")", "units": neurons_per_layer[nLayers-1]})
+    
+    NNV(layersList,max_num_nodes_visible=10, node_radius=5, spacing_layer=60, font_size=17).render(save_to_file=filename)
 
-    NNV(layersList,max_num_nodes_visible=10, node_radius=5, spacing_layer=60, font_size=17).render()
     plt.rcParams["figure.figsize"] = (9,6)
     plt.show()
     
@@ -964,8 +965,8 @@ class nn_model:
         self.biases = self.init_biases
 
 
-    def visualize(self):
-        visualize(self.nInputs, self.neurons_per_layer, self.activation_func_names)
+    def visualize(self, filename='neural_network_visualization.png'):
+        visualize(self.nInputs, self.neurons_per_layer, self.activation_func_names, filename)
         
     def details(self):
         print('----------------------------------------------------------------------------------')

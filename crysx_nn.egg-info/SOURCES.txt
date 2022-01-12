@@ -37,11 +37,14 @@ crysx_nn.egg-info/top_level.txt
 examples/.DS_Store
 examples/Activation_function_usage.ipynb
 examples/Loss_function_usage.ipynb
+examples/NN_MNIST_orig_from_raw_png_crysx.ipynb
+examples/NN_MNIST_plus_from_raw_png_crysx.ipynb
 examples/Simulating_Logic_Gates.py
 examples/Simulating_Logic_Gates_CPU.ipynb
 examples/Simulating_Logic_Gates_GPU.ipynb
 examples/Simulating_Logic_Gates_old.ipynb
 examples/glass.data.csv
+examples/user_input.jpg
 mnist_experiments/CNN_MNIST_PLUS_from_raw_png.ipynb
 mnist_experiments/CNN_MNIST_orig_from_raw_png.ipynb
 mnist_experiments/EMNIST_letters.ipynb
@@ -60,5 +63,6 @@ mnist_experiments/model_torch_MNIST.chk
 mnist_experiments/model_torch_MNIST_0.chk
 mnist_experiments/model_torch_MNIST_CNN.chk
 mnist_experiments/model_torch_MNIST_CNN_0.chk
+mnist_experiments/model_torch_MNIST_CNN_99_1.chk
 mnist_experiments/streamlit_app.py
 mnist_experiments/user_input.jpg
