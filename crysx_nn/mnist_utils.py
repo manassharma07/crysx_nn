@@ -9,7 +9,7 @@ import cv2
 try:
     import image_slicer                     
 except ImportError:
-    print('image_slicer could not be imported!')
+    print('Warning: Some features may not work as image_slicer could not be imported!')
 
 def downloadMNIST(url='https://github.com/manassharma07/MNIST-PLUS/archive/refs/tags/PNG.zip', extract_to='.'):
     http_response = urlopen(url)

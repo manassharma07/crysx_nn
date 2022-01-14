@@ -56,6 +56,8 @@ mnist_experiments/create_grids_for_input.ipynb
 mnist_experiments/empty_grid.png
 mnist_experiments/extract_from_grid.ipynb
 mnist_experiments/interactive_mnist.ipynb
+mnist_experiments/mnist_CNN_app.py
+mnist_experiments/mnist_plus_CNN_app.py
 mnist_experiments/model.chk
 mnist_experiments/model_EMNIST_letters.chk
 mnist_experiments/model_torch_EMNIST_letters_0.chk
@@ -64,5 +66,13 @@ mnist_experiments/model_torch_MNIST_0.chk
 mnist_experiments/model_torch_MNIST_CNN.chk
 mnist_experiments/model_torch_MNIST_CNN_0.chk
 mnist_experiments/model_torch_MNIST_CNN_99_1.chk
+mnist_experiments/model_torch_MNIST_CNN_99_1_streamlit.chk
+mnist_experiments/model_torch_MNIST_plus_CNN_98_5.chk
+mnist_experiments/model_torch_MNIST_plus_CNN_98_5_streamlit.chk
+mnist_experiments/model_torch_MNIST_plus_CNN_98_82.chk
+mnist_experiments/neural_network_visualization.png
+mnist_experiments/processed_tensor.png
 mnist_experiments/streamlit_app.py
+mnist_experiments/temp_for_cv2.jpg
 mnist_experiments/user_input.jpg
+mnist_experiments/user_input.png

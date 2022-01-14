@@ -485,11 +485,21 @@ def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
         
             # Error
             errorBatch = errorFunc(a[nLayers],outExpected)
+            if np.isnan(errorBatch):
+                print('loss is nan')
+                print(iEpoch)
+                print(iBatch)
             # Average it over the samples in the batch
             errorEpoch += errorBatch/batchSize
+            # print(errorBatch)
             # Get the derivative of the output cost function wrt to the output vector of the output layer
             # The input arguments should always be an array
-            dc_daL = gradErrorFunc(a[nLayers], outExpected)
+            dc_daL = gradErrorFunc(a[nLayers].astype(np.float64), outExpected.astype(np.float64)).astype(outExpected.dtype)
+            if np.isnan(dc_daL).any():
+                print('loss grad is nan')
+                print(a[nLayers])
+                print(iEpoch)
+                print(iBatch)
             # Average it out
             dc_daL = dc_daL/batchSize
             if iEpoch==0 and iBatch==0:
