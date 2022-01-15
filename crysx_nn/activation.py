@@ -43,8 +43,17 @@ def Softmax(x):
     Returns:
     Softmax activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
-    e_x = np.exp(x - np.max(x)) # For stability as it is prone to overflow and underflow
-#     return e_x / e_x.sum(axis=1, keepdims=True) # only difference
+    # The following is wrong! We should be taking hte maximum of each row of data and then subtracting that
+    # e_x = np.exp(x - np.max(x)) # For stability as it is prone to overflow and underflow
+    # Alternative 1 (Doesn't work with NUMBA)
+    # max_x = np.amax(x, 1.).reshape(x.shape[0],1)
+    # e_x = np.exp(x - max_x)
+    # return e_x / e_x.sum(axis=1, keepdims=True) # only difference
+    # Alternative 2
+    max_x = np.zeros((x.shape[0],1),dtype=x.dtype)
+    for i in range(x.shape[0]):
+        max_x[i,0] = np.max(x[i,:])
+    e_x = np.exp(x - max_x)
     return e_x / e_x.sum(axis=1).reshape((-1, 1)) # Alternative of keepdims=True for Numba compatibility
 
 @njit(cache=True,fastmath=True)

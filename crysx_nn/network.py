@@ -482,24 +482,34 @@ def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
             outExpected = outputs[offset:offset + batchSize,:] # Expected output
             # Perform Forward feed and get the outputs at each layers and the inputs at each layer
             a, z = forward_feed(x, nLayers, weights, biases, activationFunc)
-        
+
+            # if np.isnan(a[nLayers]).any():
+            #     print('predictions is nan')
+            #     print(a[nLayers])
+            #     print(a[nLayers].dtype)
+            #     print(utils.act_func_dict[activationFunc[nLayers-1]](z[nLayers-1]))
+            #     print(z[nLayers-1])
+            #     print(z[nLayers-1].dtype)
+            #     print(iEpoch)
+            #     print(iBatch)
             # Error
             errorBatch = errorFunc(a[nLayers],outExpected)
-            if np.isnan(errorBatch):
-                print('loss is nan')
-                print(iEpoch)
-                print(iBatch)
+            # if np.isnan(errorBatch):
+            #     print('loss is nan')
+            #     print(a[nLayers])
+            #     print(iEpoch)
+            #     print(iBatch)
             # Average it over the samples in the batch
             errorEpoch += errorBatch/batchSize
             # print(errorBatch)
             # Get the derivative of the output cost function wrt to the output vector of the output layer
             # The input arguments should always be an array
-            dc_daL = gradErrorFunc(a[nLayers].astype(np.float64), outExpected.astype(np.float64)).astype(outExpected.dtype)
-            if np.isnan(dc_daL).any():
-                print('loss grad is nan')
-                print(a[nLayers])
-                print(iEpoch)
-                print(iBatch)
+            dc_daL = gradErrorFunc(a[nLayers], outExpected)
+            # if np.isnan(dc_daL).any():
+            #     print('loss grad is nan')
+            #     print(a[nLayers])
+            #     print(iEpoch)
+            #     print(iBatch)
             # Average it out
             dc_daL = dc_daL/batchSize
             if iEpoch==0 and iBatch==0:

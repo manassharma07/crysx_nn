@@ -44,6 +44,7 @@ examples/Simulating_Logic_Gates_CPU.ipynb
 examples/Simulating_Logic_Gates_GPU.ipynb
 examples/Simulating_Logic_Gates_old.ipynb
 examples/glass.data.csv
+examples/neural_network_visualization.png
 examples/user_input.jpg
 mnist_experiments/CNN_MNIST_PLUS_from_raw_png.ipynb
 mnist_experiments/CNN_MNIST_orig_from_raw_png.ipynb
@@ -60,6 +61,7 @@ mnist_experiments/mnist_CNN_app.py
 mnist_experiments/mnist_plus_CNN_app.py
 mnist_experiments/model.chk
 mnist_experiments/model_EMNIST_letters.chk
+mnist_experiments/model_torch_EMNIST_letters.chk
 mnist_experiments/model_torch_EMNIST_letters_0.chk
 mnist_experiments/model_torch_MNIST.chk
 mnist_experiments/model_torch_MNIST_0.chk

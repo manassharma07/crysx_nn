@@ -172,7 +172,7 @@ def BCE_loss_grad(predictions, targets):
     # return grad
 
 @njit(cache=True,fastmath=False)
-def CCE_loss(predictions, targets, epsilon=1e-12):
+def CCE_loss(predictions, targets, epsilon=1e-7):
     """
     Computes categorical cross entropy between targets (encoded as one-hot vectors)
     and predictions. 
@@ -184,11 +184,11 @@ def CCE_loss(predictions, targets, epsilon=1e-12):
     # Formula: https://peltarion.com/knowledge-center/documentation/modeling-view/build-an-ai-model/loss-functions/categorical-crossentropy
     # No averaging over the no. of outputs/output nodes/classes is needed
     predictions = np.clip(predictions, epsilon, 1. - epsilon)
-    cce = -np.sum(targets*np.log(predictions+1e-9))
+    cce = -np.sum(targets*np.log(predictions+epsilon))
     return cce
 
 # @njit(cache=True,fastmath=True)
-def CCE_loss_grad(predictions, targets):
+def CCE_loss_grad(predictions, targets, epsilon=1e-7):
     """
     Computes categorical cross entropy gradient between targets (encoded as one-hot vectors)
     and predictions. 
@@ -196,6 +196,7 @@ def CCE_loss_grad(predictions, targets):
           targets (N, k) ndarray        
     Returns: matrix
     """
+    predictions = np.clip(predictions, epsilon, 1. - epsilon)
     # https://math.stackexchange.com/questions/2503428/derivative-of-binary-cross-entropy-why-are-my-signs-not-right
     return -np.nan_to_num(np.divide(targets,predictions,dtype=targets.dtype))
     # return -np.nan_to_num(np.divide(targets,predictions))
