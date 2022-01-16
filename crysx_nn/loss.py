@@ -10,7 +10,7 @@ import numpy as np
 try:
     import cupy as cp                     
 except ImportError:
-    print('CuPy could not be imported!')
+    print('Warning: CuPy could not be imported! You can only use CPU for computations.')
 
 @njit(cache=True,fastmath=False, parallel=True)
 def MSE_loss(outi, out0):
@@ -171,7 +171,7 @@ def BCE_loss_grad(predictions, targets):
     #             grad[i,j]=0.
     # return grad
 
-@njit(cache=True,fastmath=False)
+@njit(cache=True,fastmath=True)
 def CCE_loss(predictions, targets, epsilon=1e-7):
     """
     Computes categorical cross entropy between targets (encoded as one-hot vectors)

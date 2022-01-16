@@ -25,7 +25,7 @@ import crysx_nn.utils as utils
 try:
     import cupy as cp                     
 except ImportError:
-    print('CuPy could not be imported!')
+    print('Warning: CuPy could not be imported! You can only use CPU for computations.')
 
 
 
@@ -432,7 +432,7 @@ def nn_optimize(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=
     return weights, biases, errors
 
 # @njit(cache=False,fastmath=True)
-def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss, gradErrorFunc=loss.MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
+def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss, gradErrorFunc=loss.MSE_loss_grad,miniterEpoch=1,batchProgressBar=False,miniterBatch=100, get_accuracy=False):
     '''
     Performs the optimization of neural network weights and biases using Stochastic gradient descent.
     Parameters:
@@ -472,8 +472,12 @@ def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
         biases = []
     errors=[]
     nBatches = int(inputs.shape[0]/batchSize)
+    if get_accuracy:
+        accuracies = []
     for iEpoch in tqdm(range(nEpochs),leave=True,miniters=miniterEpoch):
         errorEpoch = 0.0
+        if get_accuracy:
+            accuracy_epoch = 0.0
         # for iBatch in range(nBatches):
         for iBatch in tqdm(range(nBatches),leave=False,miniters=miniterBatch,disable=not(batchProgressBar)):
             offset = iBatch*batchSize
@@ -492,6 +496,10 @@ def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
             #     print(z[nLayers-1].dtype)
             #     print(iEpoch)
             #     print(iBatch)
+            # Accuracy
+            if get_accuracy:
+                bool_mask = np.argmax(outExpected,axis=1)==np.argmax(a[nLayers],axis=1)
+                accuracy_epoch += np.sum(bool_mask)/batchSize
             # Error
             errorBatch = errorFunc(a[nLayers],outExpected)
             # if np.isnan(errorBatch):
@@ -521,13 +529,17 @@ def nn_optimize_fast(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
 
         # Average over the batches
         errors.append(errorEpoch/nBatches)
+        if get_accuracy:
+            accuracies.append(accuracy_epoch/nBatches)
         
         if(iEpoch==0):
             print('Average Error with initial weights and biases:', errorEpoch/nBatches)
     
 
-        
-    return weights, biases, errors
+    if get_accuracy:
+        return weights, biases, errors, accuracies
+    else:
+        return weights, biases, errors
 
 
 # act_func_dict = {'Sigmoid':activation.Sigmoid,'ReLU':activation.ReLU,'Softmax':activation.Softmax}
@@ -971,6 +983,7 @@ class nn_model:
         self.weights = self.init_weights
         self.biases = self.init_biases
         self.errors = []
+        self.accuracy = []
         self.opt_method = 'SGD'
         self.lr = 0.5
 
@@ -1003,7 +1016,7 @@ class nn_model:
         print('Learning rate: ', self.lr)
         print('----------------------------------------------------------------------------------')
         
-    def optimize(self, inputs, outputs, method=None, lr=None, nEpochs=100,loss_func_name=None, miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
+    def optimize(self, inputs, outputs, method=None, lr=None, nEpochs=100,loss_func_name=None, miniterEpoch=1,batchProgressBar=False,miniterBatch=100, get_accuracy=False):
         if method is None:
             method = self.opt_method
         if lr is None:
@@ -1015,7 +1028,10 @@ class nn_model:
             else:
                 loss_func = utils.loss_func_dict[loss_func_name]
                 loss_func_grad = utils.loss_func_grad_dict[loss_func_name]
-            self.weights, self.biases, self.errors = nn_optimize_fast(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
+            if get_accuracy:
+                self.weights, self.biases, self.errors, self.accuracy = nn_optimize_fast(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch, get_accuracy=get_accuracy)
+            else:
+                self.weights, self.biases, self.errors = nn_optimize_fast(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
         if self.device=='GPU':
             if loss_func_name is None:
                 loss_func = loss.MSE_loss_cupy
@@ -1025,10 +1041,35 @@ class nn_model:
                 loss_func_grad = utils.loss_func_grad_dict_cupy[loss_func_name]
             self.weights, self.biases, self.errors = nn_optimize_fast_cupy(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
     
-    def predict(self, inputs, outputs=None, loss_func_name=None):
+    def save_model_weights(self, filename):
+        np.savez(filename, *self.weights)
+    
+    def save_model_biases(self, filename):
+        np.savez(filename, *self.biases)
+
+    def load_model_weights(self, filename):
+        outfile = np.load(filename+'.npz')
+        for i in range(len(outfile.files)):
+            self.weights[i] = outfile[outfile.files[i]]
+    
+        
+    def load_model_biases(self, filename):
+        outfile = np.load(filename+'.npz')
+        for i in range(len(outfile.files)):
+            self.biases[i] = outfile[outfile.files[i]]
+        
+    def predict(self, inputs, outputs=None, loss_func_name=None, get_accuracy=False):
         error = 0.0
+        accuracy = 0.0
         nBatches = np.maximum(int(inputs.shape[0]/self.batch_size),1)
+        
+        if inputs.shape[0]/self.batch_size<1:
+            nBatches= 1
+            batch_size = inputs.shape[0]
+        else:
+            batch_size = self.batch_size
         if self.device=='CPU':
+            predictions = np.zeros([inputs.shape[0], self.neurons_per_layer[-1]],dtype=inputs.dtype)
             if loss_func_name is None:
                 loss_func = loss.MSE_loss
                 loss_func_grad = loss.MSE_loss_grad
@@ -1036,18 +1077,27 @@ class nn_model:
                 loss_func = utils.loss_func_dict[loss_func_name]
                 loss_func_grad = utils.loss_func_grad_dict[loss_func_name]
             for iBatch in range(nBatches):
-                offset = iBatch*self.batch_size
-                x = inputs[offset:offset + self.batch_size,:]# Input vector
+                # offset = iBatch*self.batch_size
+                offset = iBatch*batch_size
+                # x = inputs[offset:offset + self.batch_size,:]# Input vector
+                x = inputs[offset:offset + batch_size,:]# Input vector
                 
                 # Forward feed with optimized weights
                 # Perform Forward feed and get the outputs at each layers and the inputs at each layer
                 a, z = forward_feed(x, self.nLayers, self.weights, self.biases, self.activation_func_names)
                 new_outputs = a[self.nLayers] 
+                predictions[offset:offset + batch_size,:] = new_outputs
                 if outputs is not None:
-                    outExpected = outputs[offset:offset + self.batch_size,:] # Expected output
+                    # outExpected = outputs[offset:offset + self.batch_size,:] # Expected output
+                    outExpected = outputs[offset:offset + batch_size,:] # Expected output
                     # New Error
-                    error += loss_func(new_outputs, outExpected)/self.batch_size
+                    # error += loss_func(new_outputs, outExpected)/self.batch_size
+                    error += loss_func(new_outputs, outExpected)/batch_size
+                    if get_accuracy:
+                        bool_mask = np.argmax(new_outputs,axis=1)==np.argmax(outExpected,axis=1)
+                        accuracy += np.sum(bool_mask)
         if self.device=='GPU':
+            predictions = cp.zeros([inputs.shape[0], self.neurons_per_layer[-1]],dtype=inputs.dtype)
             if loss_func_name is None:
                 loss_func = loss.MSE_loss_cupy
                 loss_func_grad = loss.MSE_loss_grad_cupy
@@ -1055,19 +1105,30 @@ class nn_model:
                 loss_func = utils.loss_func_dict_cupy[loss_func_name]
                 loss_func_grad = utils.loss_func_grad_dict_cupy[loss_func_name]
             for iBatch in range(nBatches):
-                offset = iBatch*self.batch_size
-                x = inputs[offset:offset + self.batch_size,:]# Input vector
+                # offset = iBatch*self.batch_size
+                offset = iBatch*batch_size
+                # x = inputs[offset:offset + self.batch_size,:]# Input vector
+                x = inputs[offset:offset + batch_size,:]# Input vector
                 
                 # Forward feed with optimized weights
                 # Perform Forward feed and get the outputs at each layers and the inputs at each layer
                 a, z = forward_feed_cupy(x, self.nLayers, self.weights, self.biases, self.activation_func_names)
                 new_outputs = a[self.nLayers] 
+                predictions[offset:offset + batch_size,:] = new_outputs
                 if outputs is not None:
-                    outExpected = outputs[offset:offset + self.batch_size,:] # Expected output
+                    # outExpected = outputs[offset:offset + self.batch_size,:] # Expected output
+                    outExpected = outputs[offset:offset + batch_size,:] # Expected output
                     # New Error
                     # New Error
-                    error += loss_func(new_outputs, outExpected)/self.batch_size
+                    # error += loss_func(new_outputs, outExpected)/self.batch_size
+                    error += loss_func(new_outputs, outExpected)/batch_size
+                    if get_accuracy:
+                        bool_mask = cp.argmax(new_outputs,axis=1)==cp.argmax(outExpected,axis=1)
+                        accuracy += cp.sum(bool_mask)
         if outputs is None:
-            return new_outputs
+            return predictions
         else:
-            return new_outputs, error/nBatches
+            if not get_accuracy:
+                return predictions, error/nBatches
+            else :
+                return predictions, error/nBatches, accuracy/outputs.shape[0]

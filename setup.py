@@ -34,7 +34,8 @@ setup(
                       'numexpr',
                       'tomli',
                       'Pillow',
-                      'opencv-python'                    
+                      'opencv-python' ,
+                      'seaborn'                   
                       ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

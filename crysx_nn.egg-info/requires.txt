@@ -9,3 +9,4 @@ numexpr
 tomli
 Pillow
 opencv-python
+seaborn
