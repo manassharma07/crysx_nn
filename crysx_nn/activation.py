@@ -348,7 +348,8 @@ def ReLU_cupy(x):
     return x * (x > 0) # This has been the fastest till date
 
 def ReLU_grad_cupy(x):
-    return cp.greater(x, 0.).astype(cp.float32)
+    # return cp.greater(x, 0.).astype(cp.float32)
+    return cp.greater(x, 0.).astype(x.dtype)
 
 
 def Tanh_offset_cupy(x):

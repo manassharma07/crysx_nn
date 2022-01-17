@@ -874,7 +874,7 @@ def nn_optimize_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, batch
     
     return weights, biases, errors
 
-def nn_optimize_fast_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss_cupy, gradErrorFunc=loss.MSE_loss_grad_cupy,miniterEpoch=1,batchProgressBar=False,miniterBatch=100):
+def nn_optimize_fast_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, batchSize=None, eeta=0.5, weights=None, biases=None, errorFunc=loss.MSE_loss_cupy, gradErrorFunc=loss.MSE_loss_grad_cupy,miniterEpoch=1,batchProgressBar=False,miniterBatch=100, get_accuracy=False):
     '''
     Performs the optimization of neural network weights and biases using Stochastic gradient descent.
     Parameters:
@@ -914,8 +914,12 @@ def nn_optimize_fast_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, 
         biases = []
     errors=[]
     nBatches = int(inputs.shape[0]/batchSize)
+    if get_accuracy:
+        accuracies = []
     for iEpoch in tqdm(range(nEpochs),leave=True,miniters=miniterEpoch):
         errorEpoch = 0.0
+        if get_accuracy:
+            accuracy_epoch = 0.0
         # for iBatch in range(nBatches):
         for iBatch in tqdm(range(nBatches),leave=False,miniters=miniterBatch,disable=not(batchProgressBar)):
             offset = iBatch*batchSize
@@ -925,7 +929,10 @@ def nn_optimize_fast_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, 
             # Perform Forward feed and get the outputs at each layers and the inputs at each layer
             a, z = forward_feed_cupy(x, nLayers, weights, biases, activationFunc)
           
-        
+            # Accuracy
+            if get_accuracy:
+                bool_mask = np.argmax(outExpected,axis=1)==np.argmax(a[nLayers],axis=1)
+                accuracy_epoch += np.sum(bool_mask)/batchSize
             # Error
             errorBatch = errorFunc(a[nLayers],outExpected)
             # Average it over the samples in the batch
@@ -941,17 +948,19 @@ def nn_optimize_fast_cupy(inputs, outputs, activationFunc, nLayers, nEpochs=10, 
             # Perform Back Propagation and get the derivatives wrt the weights and biases
             derWeights, derBiases, weights, biases = back_propagation_fast_cupy(z, a, activationFunc, nLayers, batchSize, weights, biases, eeta, dc_daL,opt_expr)
             
-
-
         # Average over the batches
         errors.append(errorEpoch/nBatches)
+        if get_accuracy:
+            accuracies.append(accuracy_epoch/nBatches)
         
         if(iEpoch==0):
             print('Average Error with initial weights and biases:', errorEpoch/nBatches)
     
 
-        
-    return weights, biases, errors
+    if get_accuracy:
+        return weights, biases, errors, accuracies
+    else:
+        return weights, biases, errors
 
 class nn_model:
     def __init__(self, nInputs=None, neurons_per_layer=None, activation_func_names=None, batch_size=None, device='CPU', init_method='Xavier'): 
@@ -1039,24 +1048,46 @@ class nn_model:
             else:
                 loss_func = utils.loss_func_dict_cupy[loss_func_name]
                 loss_func_grad = utils.loss_func_grad_dict_cupy[loss_func_name]
-            self.weights, self.biases, self.errors = nn_optimize_fast_cupy(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
+            if get_accuracy:
+                self.weights, self.biases, self.errors, self.accuracy = nn_optimize_fast_cupy(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch, get_accuracy=get_accuracy)
+            else:
+                self.weights, self.biases, self.errors = nn_optimize_fast_cupy(inputs, outputs, self.activation_func_names, self.nLayers, nEpochs=nEpochs, batchSize=self.batch_size, eeta=lr, weights=self.weights, biases=self.biases, errorFunc=loss_func, gradErrorFunc=loss_func_grad,miniterEpoch=miniterEpoch,batchProgressBar=batchProgressBar,miniterBatch=miniterBatch)
     
     def save_model_weights(self, filename):
-        np.savez(filename, *self.weights)
+        if self.device=='CPU':
+            np.savez(filename, *self.weights)
+        elif self.device=='GPU':
+            cp.savez(filename, *self.weights)
+
     
     def save_model_biases(self, filename):
-        np.savez(filename, *self.biases)
+        if self.device=='CPU':
+            np.savez(filename, *self.biases)
+        elif self.device=='GPU':
+            cp.savez(filename, *self.biases)
 
-    def load_model_weights(self, filename):
-        outfile = np.load(filename+'.npz')
-        for i in range(len(outfile.files)):
-            self.weights[i] = outfile[outfile.files[i]]
+    def load_model_weights(self, filename):   
+        if self.device=='CPU':
+            outfile = np.load(filename+'.npz')
+            for i in range(len(outfile.files)):
+                self.weights[i] = outfile[outfile.files[i]]
+        elif self.device=='GPU':
+            # Need to use numpy to load the files due to a bug
+            outfile = np.load(filename+'.npz')
+            for i in range(len(outfile.files)):
+                self.weights[i] = cp.array(outfile[outfile.files[i]])
     
         
     def load_model_biases(self, filename):
-        outfile = np.load(filename+'.npz')
-        for i in range(len(outfile.files)):
-            self.biases[i] = outfile[outfile.files[i]]
+        if self.device=='CPU':
+            outfile = np.load(filename+'.npz')
+            for i in range(len(outfile.files)):
+                self.biases[i] = outfile[outfile.files[i]]
+        elif self.device=='GPU':
+            # Need to use numpy to load the files due to a bug
+            outfile = np.load(filename+'.npz')
+            for i in range(len(outfile.files)):
+                self.biases[i] = cp.array(outfile[outfile.files[i]])
         
     def predict(self, inputs, outputs=None, loss_func_name=None, get_accuracy=False):
         error = 0.0
