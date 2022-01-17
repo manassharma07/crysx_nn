@@ -38,6 +38,7 @@ examples/.DS_Store
 examples/Activation_function_usage.ipynb
 examples/Loss_function_usage.ipynb
 examples/Microstructures_Classification_CPU.ipynb
+examples/Microstructures_Classification_GPU.ipynb
 examples/NN_MNIST_orig_from_raw_png_crysx.ipynb
 examples/NN_MNIST_plus_from_raw_png_crysx.ipynb
 examples/NN_crysx_microstructure_96_biases.npz
