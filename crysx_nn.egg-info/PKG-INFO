@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: crysx-nn
-Version: 0.1.7
+Version: 0.1.8
 Summary: A simplistic and efficient pure-python neural network library from Phys Whiz.
 Home-page: https://github.com/manassharma07/crysx_nn
 Author: Manas Sharma
 Author-email: feedback@bragitoff.com
 License: MIT
-Download-URL: https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.7.tar.gz
+Download-URL: https://github.com/manassharma07/crysx_nn/archive/refs/tags/v_0.1.8.tar.gz
 Keywords: neural network,pure python,crysx,numba nn,machine learning,ML,deep learning,deepL,MLP,perceptron,phys whiz,manas sharma,bragitoff,crysx
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable

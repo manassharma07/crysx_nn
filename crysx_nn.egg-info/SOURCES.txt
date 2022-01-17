@@ -39,6 +39,10 @@ examples/Activation_function_usage.ipynb
 examples/Loss_function_usage.ipynb
 examples/NN_MNIST_orig_from_raw_png_crysx.ipynb
 examples/NN_MNIST_plus_from_raw_png_crysx.ipynb
+examples/NN_crysx_mnist_98.11_biases.npz
+examples/NN_crysx_mnist_98.11_weights.npz
+examples/NN_crysx_mnist_plus_98.11_biases.npz
+examples/NN_crysx_mnist_plus_98.11_weights.npz
 examples/Simulating_Logic_Gates.py
 examples/Simulating_Logic_Gates_CPU.ipynb
 examples/Simulating_Logic_Gates_GPU.ipynb
