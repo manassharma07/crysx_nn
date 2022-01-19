@@ -15,14 +15,17 @@ Lets say you have an Nvidia card, then you will need to install CUDA and the com
 ## Example 2
 ### MINST Handwritten digits recognition 
 #### Task type - Classification 
-#### ![DEMO](https://github.com/manassharma07/crysx_nn/blob/main/demo_gifs/MNIST_CrysX-NN.gif) [App link](https://share.streamlit.io/manassharma07/mnist-plus/main/mnist_NN_crysx_app.py) 
+#### [DEMO](https://share.streamlit.io/manassharma07/mnist-plus/main/mnist_NN_crysx_app.py) 
+![MNIST CRYSX-NN DEMO](https://github.com/manassharma07/crysx_nn/blob/main/demo_gifs/MNIST_CrysX-NN.gif) 
 
 * [CPU](https://github.com/manassharma07/crysx_nn/blob/main/examples/NN_MNIST_orig_from_raw_png_crysx.ipynb)
 * GPU -
 
 ## Example 3
 ### MINST_PLus Handwritten digits recognition 
-#### Task type - Classification ![DEMO]()
+#### Task type - Classification 
+#### [DEMO](https://share.streamlit.io/manassharma07/mnist-plus/main/mnist_plus_NN_crysx_app.py) 
+![MNIST_PLUS CRYSX-NN DEMO](https://github.com/manassharma07/crysx_nn/blob/main/demo_gifs/MNIST_Plus_CrysX-NN.gif) 
 
 * [CPU](https://github.com/manassharma07/crysx_nn/blob/main/examples/NN_MNIST_plus_from_raw_png_crysx.ipynb) 
 * GPU -
