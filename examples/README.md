@@ -33,6 +33,8 @@ Lets say you have an Nvidia card, then you will need to install CUDA and the com
 ## Example 4
 ### Recognition of Microstructures of different types
 #### Task type - Classification
+#### [DEMO](https://share.streamlit.io/manassharma07/microstructure_classification_app/main/Microstructure_Classification_CrysX-NN_app.py) 
+![MNIST_PLUS CRYSX-NN DEMO](https://github.com/manassharma07/crysx_nn/blob/main/demo_gifs/Microstructure_Classification_CrysX-NN.gif) 
 
 * [CPU](https://github.com/manassharma07/crysx_nn/blob/main/examples/Microstructures_Classification_CPU.ipynb)
 * [GPU ](https://github.com/manassharma07/crysx_nn/blob/main/examples/Microstructures_Classification_GPU.ipynb)
