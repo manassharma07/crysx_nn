@@ -34,6 +34,9 @@ crysx_nn.egg-info/SOURCES.txt
 crysx_nn.egg-info/dependency_links.txt
 crysx_nn.egg-info/requires.txt
 crysx_nn.egg-info/top_level.txt
+demo_gifs/MNIST_CrysX-NN.gif
+demo_gifs/MNIST_Plus_CrysX-NN.gif
+demo_gifs/Microstructure_Classification_CrysX-NN.gif
 examples/.DS_Store
 examples/Activation_function_usage.ipynb
 examples/Loss_function_usage.ipynb
@@ -42,11 +45,14 @@ examples/Microstructures_Classification_GPU.ipynb
 examples/NN_MNIST_orig_from_raw_png_crysx.ipynb
 examples/NN_MNIST_plus_from_raw_png_crysx.ipynb
 examples/NN_crysx_microstructure_96_biases.npz
+examples/NN_crysx_microstructure_96_biases_cupy.npz
 examples/NN_crysx_microstructure_96_weights.npz
+examples/NN_crysx_microstructure_96_weights_cupy.npz
 examples/NN_crysx_mnist_98.11_biases.npz
 examples/NN_crysx_mnist_98.11_weights.npz
 examples/NN_crysx_mnist_plus_98.11_biases.npz
 examples/NN_crysx_mnist_plus_98.11_weights.npz
+examples/README.md
 examples/Simulating_Logic_Gates.py
 examples/Simulating_Logic_Gates_CPU.ipynb
 examples/Simulating_Logic_Gates_GPU.ipynb

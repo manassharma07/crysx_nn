@@ -172,7 +172,7 @@ def BCE_loss_grad(predictions, targets):
     # return grad
 
 @njit(cache=True,fastmath=True)
-def CCE_loss(predictions, targets, epsilon=1e-7):
+def CCE_loss(predictions, targets, epsilon=1e-9):
     """
     Computes categorical cross entropy between targets (encoded as one-hot vectors)
     and predictions. 
@@ -188,7 +188,7 @@ def CCE_loss(predictions, targets, epsilon=1e-7):
     return cce
 
 # @njit(cache=True,fastmath=True)
-def CCE_loss_grad(predictions, targets, epsilon=1e-7):
+def CCE_loss_grad(predictions, targets, epsilon=1e-9):
     """
     Computes categorical cross entropy gradient between targets (encoded as one-hot vectors)
     and predictions. 
@@ -293,7 +293,7 @@ def BCE_loss_grad_cupy(predictions, targets):
     # https://math.stackexchange.com/questions/2503428/derivative-of-binary-cross-entropy-why-are-my-signs-not-right
     return -(cp.divide(targets,predictions)-cp.divide(1-targets,1-predictions))/predictions.shape[1]
 
-def CCE_loss_cupy(predictions, targets, epsilon=1e-7):
+def CCE_loss_cupy(predictions, targets, epsilon=1e-9):
     """
     Computes categorical cross entropy between targets (encoded as one-hot vectors)
     and predictions. 
