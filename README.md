@@ -386,6 +386,7 @@ Note: For small networks the Cupy versions may actually be slower than CPU versi
 - [x] Neural network optimization using 
     - [x] Stochastic Gradient Descent
 - [x] Support for batched inputs, i.e., supplying a matrix of inputs where the columns correspond to features and rows to the samples
+- [x] Save/load trained model weights and biases
 - [x] Support for GPU through Cupy `pip install cupy-cuda102` (Tested with CUDA 10.2)
 - [x] JIT compiled functions when possible for efficiency
 - [x] Object oriented
