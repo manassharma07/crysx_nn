@@ -297,24 +297,24 @@ def Softmax_cupy(x):
     Softmax activated (N,k) ndarray (N: no. of samples, k: no. of nodes)
     '''
     max_x = cp.amax(x, 1).reshape(x.shape[0],1)
-    e_x = cp.exp(x - max_x) # For stability as it is prone to overflow and underflow
+    e_x = cp.exp(x - max_x, dtype=x.dtype) # For stability as it is prone to overflow and underflow
 #     return e_x / e_x.sum(axis=1, keepdims=True) # only difference
     return e_x / e_x.sum(axis=1).reshape((-1, 1)) # Alternative of keepdims=True for Numba compatibility
 
 def Softmax_grad_cupy(x): # Best implementation (VERY FAST)
     
     s = Softmax_cupy(x)
-    a = cp.eye(s.shape[-1])
-    temp1 = cp.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=cp.float32)
-    temp2 = cp.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=cp.float32)
+    a = cp.eye(s.shape[-1], dtype=x.dtype)
+    temp1 = cp.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=x.dtype)
+    temp2 = cp.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=x.dtype)
     # for i in range(s.shape[0]):
     #     for j in range(s.shape[1]):
     #         for k in range(s.shape[1]):
     #             temp1[i,j,k] = s[i,j]*a[j,k]
     #             temp2[i,j,k] = s[i,j]*s[i,k]
-    temp1 = cp.einsum('ij,jk->ijk',s,a)
-    temp2 = cp.einsum('ij,ik->ijk',s,s)
-    return temp1-temp2
+    temp1 = cp.einsum('ij,jk->ijk',s,a, dtype=x.dtype)
+    temp2 = cp.einsum('ij,ik->ijk',s,s, dtype=x.dtype)
+    return (temp1-temp2)#.astype(x.dtype)
 
 def Sigmoid_cupy(x): # Also known as logistic/soft step or even expit in scipy.special
     # The following is susceptible to overflow/underflow issues.
@@ -333,10 +333,10 @@ def Sigmoid_cupy(x): # Also known as logistic/soft step or even expit in scipy.s
     # return top / (1. + z)
     # Alternative 2 
     # Neil G's answer from here https://stackoverflow.com/questions/3985619/how-to-calculate-a-logistic-sigmoid-function-in-python
-    return cp.exp(-cp.logaddexp(0., -x)) 
+    return cp.exp(-cp.logaddexp(0, -x, dtype=x.dtype), dtype=x.dtype) 
 
 def Sigmoid_grad_cupy(x):
-    e_x = cp.exp(-x)
+    e_x = cp.exp(-x, dtype=x.dtype)
     return e_x/(e_x+1.)**2
 
 
@@ -368,7 +368,7 @@ def Identity_cupy(x):
     return x
 
 def Identity_grad_cupy(x):
-    return cp.ones(x.shape, dtype=cp.float32)
+    return cp.ones(x.shape, dtype=x.dtype)
 
 def Softplus_cupy(x): 
     # Reference: https://stackoverflow.com/questions/44230635/avoid-overflow-with-softplus-function-in-python

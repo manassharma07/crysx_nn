@@ -264,7 +264,7 @@ def MAE_loss_grad_cupy(predictions, targets):
     return loss_grad/predictions.shape[1]
     
 
-def BCE_loss_cupy(predictions, targets, epsilon=1e-12):
+def BCE_loss_cupy(predictions, targets, epsilon=1e-7):
     """
     Computes binary cross entropy between targets (encoded as one-hot vectors)
     and predictions. 
@@ -280,7 +280,7 @@ def BCE_loss_cupy(predictions, targets, epsilon=1e-12):
     return ce
 
 
-def BCE_loss_grad_cupy(predictions, targets):
+def BCE_loss_grad_cupy(predictions, targets, epsilon=1e-7):
     """
     Computes binary cross entropy gradient between targets (encoded as one-hot vectors)
     and predictions. 
@@ -291,7 +291,9 @@ def BCE_loss_grad_cupy(predictions, targets):
     Therefore, to get an answer similar to PyTorch, one must divide the result by the batch size.
     """
     # https://math.stackexchange.com/questions/2503428/derivative-of-binary-cross-entropy-why-are-my-signs-not-right
-    return -(cp.divide(targets,predictions)-cp.divide(1-targets,1-predictions))/predictions.shape[1]
+    predictions = cp.clip(predictions, epsilon, 1. - epsilon)
+    # return -(cp.divide(targets,predictions)-cp.divide(1-targets,1-predictions))/predictions.shape[1]
+    return -(cp.nan_to_num(cp.divide(targets,predictions,dtype=targets.dtype))-cp.nan_to_num(cp.divide(1.-targets,1.-predictions,dtype=targets.dtype)))/predictions.shape[1]
 
 def CCE_loss_cupy(predictions, targets, epsilon=1e-9):
     """
@@ -308,7 +310,7 @@ def CCE_loss_cupy(predictions, targets, epsilon=1e-9):
     cce = -cp.sum(targets*cp.log(predictions))
     return cce
 
-def CCE_loss_grad_cupy(predictions, targets):
+def CCE_loss_grad_cupy(predictions, targets, epsilon=1e-8):
     """
     Computes cross entropy gradient between targets (encoded as one-hot vectors)
     and predictions. 
@@ -316,5 +318,6 @@ def CCE_loss_grad_cupy(predictions, targets):
           targets (N, k) ndarray        
     Returns: matrix
     """
+    predictions = cp.clip(predictions, epsilon, 1. - epsilon)
     # https://math.stackexchange.com/questions/2503428/derivative-of-binary-cross-entropy-why-are-my-signs-not-right
     return -cp.divide(targets,predictions)
