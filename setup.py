@@ -25,7 +25,7 @@ setup(
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     install_requires=['numba>=0.54.1',
-                      'numpy==1.19.2', 
+                      'numpy>=1.19.2', 
                       'autograd',
                       'tqdm',
                       'opt_einsum',
